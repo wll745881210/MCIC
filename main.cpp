@@ -1,7 +1,6 @@
 #include "input.h"
 #include "photon.h"
-#include "rand_gamma.h"
-#include "rand_knscat.h"
+#include "rand_planck.h"
 
 #include <iostream>
 #include <string>
@@ -91,19 +90,18 @@ int main(  )
 {
     try
     {
-	auto test = rand_knscat::get_instance(  );
-	test->set_resolution( 1e3 );
-	test->set_eta_range( 1e-2, 1e1, 20 );
+	auto test = rand_planck::get_instance(  );
+	test->set_resolution( 1e2 );
 	test->integrate(  );
 
 	std::vector<double> res;
 	for( int i = 0; i < 1e6; ++ i )
-	    res.push_back( test->get_rand_mu( 1e-1 ) );
+	    res.push_back( test->get_rand_planck(  ) );
 
 	std::ofstream fout( "test.dat" );
 	for( unsigned i = 0; i < res.size(  ); ++ i )
 	    fout << res[ i ] << '\n';
-	rand_knscat::del_instance(  );
+	rand_planck::del_instance(  );
     }
     catch( const char * err )
     {

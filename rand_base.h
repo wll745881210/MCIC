@@ -25,7 +25,7 @@ private:			// PDF and conversion
     // x := exp( - ( gamma - 1 ) / theta ).
 
     ////////// Uniform random generator //////////
-private:			// Functor
+protected:			// Functor
     std::default_random_engine     generator;
     std::uniform_real_distribution<double> cdf_rand;
     
@@ -45,10 +45,9 @@ public:
     void integrate(  );
 
     ////////// Interpolation //////////
-private:			// Function
+protected:			// Function
     double interp_single_t
     ( const double & c, std::map<double, double> * p );
-protected:			// Function
     double interp_cdf
     ( const double & c, const double & t );
 public:				// Function

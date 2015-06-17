@@ -1,6 +1,7 @@
 #include "rand_base.h"
 
 #include <cmath>
+#include <iostream>
 
 ////////////////////////////////////////////////////////////
 // Initializers
@@ -45,7 +46,8 @@ rand_base::intg_single_t( const double & t )
     auto res = new std::map<double, double>;
     for( unsigned i = 0; i < x_vec.size(  ) - 1; ++ i )
     {
-	const double & x = x_vec[ i ]; 
+	const double & x = x_vec[ i ];
+	
 	const double dx  = x_vec[ i + 1 ] - x;
 	res->insert( std::make_pair( c_current, x ) );
 	rk4( c_current, x, dx );
