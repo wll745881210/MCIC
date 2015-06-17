@@ -1,0 +1,9 @@
+#include "rand_knscat.h"
+
+#include <cmath>
+#include <iostream>
+
+////////////////////////////////////////////////////////////
+// Static variables
+
+

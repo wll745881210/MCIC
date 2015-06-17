@@ -1,38 +1,27 @@
-#ifndef MY_RANDOM_H_
-#define MY_RANDOM_H_
+#ifndef RAND_KNSCAT_H_
+#define RAND_KNSCAT_H_
 
 #include <random>
 #include <map>
 
 ////////////////////////////////////////////////////////////
-// Here the distribution function is integrated to give the
-// cumulative distribution, by which a uniform distribution
-// is mapped onto desired distribution. The best way of
-// doing this is to get the distribution function for
-// x := exp( - ( gamma - 1 ) / theta ).
-// The normalized PDF for x would then be
-// f_x = exp( - 1 / theta ) / K_2( 1 / theta )
-//     * ( 1 - theta * ln( x ) )
-//     * ( theta**2 ln**2( x ) - 2 * theta * ln( x ) )^(1/2)
-// and P = \int_0^x f_x' dx'.
-// Then, integration is conducted from ( P = 1, x = 1 ) to
-// ( P = 0, x = 0 ).
-// BTW, when theta < 1e-2, we shall reduce our PDF to the NR
-// Maxwellian case, but let's keep it as it is at this
-// moment.
+// Klein-Nishina scatterings with proper scattering angle
+// (and hence energy) distribution.
+// Here the "auxiliary variable" x is defined as,
+// x := h \nu_0 / ( m_e c^2 ).
 
-class my_random
+class rand_knscat
 {
     ////////// Initializers //////////
 private:
-    static my_random * singleton;
-     my_random(  );
-    ~my_random(  );
+    static rand_knscat * singleton;
+     rand_knscat(  );
+    ~rand_knscat(  );
 public:
-    static my_random * get_instance(  );
-    static void        del_instance(  );
+    static rand_knscat * get_instance(  );
+    static void          del_instance(  );
     void set_intg_pts( const int & n_x );
-    void set_theta
+    void set_gamma
     ( const double & theta0, const double & theta1,
       const int    & n_theta );
 
@@ -67,7 +56,8 @@ private:			// Function
     ( const double & y, std::map<double, double> * p );
     double cdf( const double & y, const double & theta );
 public:				// Function
-    double get_rand_gamma( const double & theta );
+    double get_rand_knscat( const double & theta );
 };
+
 
 #endif

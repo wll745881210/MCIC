@@ -1,22 +1,20 @@
-#include "my_random.h"
+#include "rand_base.h"
 
 #include <cmath>
-#include <iostream>
-#include <boost/math/special_functions/bessel.hpp>
 
 ////////////////////////////////////////////////////////////
 // Static variables
-my_random * my_random::singleton( nullptr );
+rand_base * rand_base::singleton( nullptr );
 
 ////////////////////////////////////////////////////////////
 // Initializers
 
-my_random::my_random(  ) : t_rand( 0, 1 ), d_x( -1 )
+rand_gamma::rand_gamma(  ) : t_rand( 0, 1 ), d_x( -1 )
 {
     return;
 }
 
-my_random::~my_random(  )
+rand_gamma::~rand_gamma(  )
 {
     for( auto p = theta_map.begin(  );
 	 p != theta_map.end(  ); ++ p )
@@ -25,28 +23,28 @@ my_random::~my_random(  )
     return;
 }
 
-my_random * my_random::get_instance(  )
+rand_gamma * rand_gamma::get_instance(  )
 {
     if( singleton == nullptr )
-	singleton = new my_random;
+	singleton = new rand_gamma;
     return singleton;
 }
 
-void my_random::del_instance(  )
+void rand_gamma::del_instance(  )
 {
     if( singleton != nullptr )
 	delete singleton;
     return;
 }
 
-void my_random::set_intg_pts( const int & n_x )
+void rand_gamma::set_intg_pts( const int & n_x )
 {
     this->n_x = n_x;
     this->d_x = 1. / n_x;	// Final point is ( 0, 0 )
     return;
 }
 
-void my_random::set_theta
+void rand_gamma::set_theta
 ( const double & theta0, const double & theta1,
   const int    & n_theta )
 {
@@ -62,7 +60,7 @@ void my_random::set_theta
 ////////////////////////////////////////////////////////////
 // Distribution function
 
-double my_random::pdf( const double & x )
+double rand_gamma::pdf( const double & x )
 {
     const double lnx = log( x );
     return norm_theta * ( 1 - theta * lnx ) *
@@ -72,7 +70,7 @@ double my_random::pdf( const double & x )
 ////////////////////////////////////////////////////////////
 // Runge-Kutta integration--specifically designed
 
-void my_random::rk4( double & p, const double & x )
+void rand_gamma::rk4( double & p, const double & x )
 {
     const double dp0 = pdf( x );
     const double dp1 = pdf( x - d_x / 2 );
@@ -81,7 +79,7 @@ void my_random::rk4( double & p, const double & x )
     return;
 }
 
-void my_random::intg_single_theta(  )
+void rand_gamma::intg_single_theta(  )
 {
     double p( 1 );
     auto res = new std::map<double, double>;
@@ -100,7 +98,7 @@ void my_random::intg_single_theta(  )
     return;
 }
 
-void my_random::integrate(  )
+void rand_gamma::integrate(  )
 {
     for( int i = 0; i < n_theta; ++ i )
     {
@@ -116,7 +114,7 @@ void my_random::integrate(  )
 ////////////////////////////////////////////////////////////
 // Interpolation
 
-double my_random::interp_x
+double rand_gamma::interp_x
 ( const double & y, std::map<double, double> * p )
 {
     auto q = p->lower_bound( y );
@@ -135,7 +133,7 @@ double my_random::interp_x
     }
 }
 
-double my_random::cdf
+double rand_gamma::cdf
 ( const double & y, const double & lnt )
 {
     auto p = theta_map.lower_bound( lnt );
@@ -158,7 +156,7 @@ double my_random::cdf
     }
 }
 
-double my_random::get_rand_gamma( const double & theta )
+double rand_gamma::get_rand_gamma( const double & theta )
 {
     const double t = t_rand( generator );
     const double x = cdf( t, log( theta ) );

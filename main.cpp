@@ -1,12 +1,14 @@
 #include "input.h"
 #include "photon.h"
-#include "my_random.h"
+#include "rand_gamma.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 // #include <omp.h>
+
+////////////////////////////////////////////////////////////
 
 // void driver( input & args )
 // {
@@ -88,7 +90,7 @@ int main(  )
 {
     try
     {
-	auto test = my_random::get_instance(  );
+	auto test = rand_gamma::get_instance(  );
 	test->set_intg_pts( 1000 );
 	test->set_theta( 1e-3, 1e0, 5 );
 	test->integrate(  );
@@ -100,7 +102,7 @@ int main(  )
 	std::ofstream fout( "test.txt" );
 	for( unsigned i = 0; i < res.size(  ); ++ i )
 	    fout << res[ i ] << '\n';
-	my_random::del_instance(  );
+	rand_gamma::del_instance(  );
     }
     catch( const char * err )
     {
