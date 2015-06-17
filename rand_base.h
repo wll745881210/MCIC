@@ -1,54 +1,58 @@
-#ifndef RAND_GAMMA_H_
-#define RAND_GAMMA_H_
+#ifndef RAND_BASE_H_
+#define RAND_BASE_H_
 
 #include <random>
+#include <vector>
 #include <map>
 
 ////////////////////////////////////////////////////////////
 // Random variable generator with one parameter.
+// Conventions:
+// x for the target random variable;
+// t for the parameter;
+// c for cumulative distribution function (cdf).
 
 class rand_base
 {
     ////////// Initializers //////////
-private:
-    static rand_gamma * singleton;
-     rand_gamma(  );
-    ~rand_gamma(  );
 public:
-    static rand_gamma * get_instance(  );
-    static void         del_instance(  );
+     rand_base(  );
+    ~rand_base(  );
 
     ////////// Distribution function //////////
-private:			// Data
-    double theta, ln_theta, norm_theta;
 private:			// PDF and conversion
     virtual double pdf( const double & x ) = 0;
     // x := exp( - ( gamma - 1 ) / theta ).
 
-    ////////// Random generator //////////
+    ////////// Uniform random generator //////////
 private:			// Functor
     std::default_random_engine     generator;
-    std::uniform_real_distribution<double> t_rand;
+    std::uniform_real_distribution<double> cdf_rand;
     
     ////////// Integration //////////
-private:			// Data
-    double ln_theta0, ln_theta1, d_ln_theta;
-    int  n_theta;
-    std::map<double, std::map<double, double> * > theta_map;
+protected:			// Data
+    std::vector<double> x_vec, t_vec;
+    std::map<double, std::map<double, double> * > t_map;
+    double c_current;
 private:			// Function
     void rk4( double & p, const double & x,
-	      const double & d_x );
-    void intg_single_theta(  );
+	      const double & dx );
+protected:
+    virtual std::map<double, double> *
+    intg_single_t( const double & t );
+    virtual void prepare_intg(  );
 public:
     void integrate(  );
 
     ////////// Interpolation //////////
 private:			// Function
-    double interp_x
-    ( const double & y, std::map<double, double> * p );
-    double cdf( const double & y, const double & theta );
+    double interp_single_t
+    ( const double & c, std::map<double, double> * p );
+protected:			// Function
+    double interp_cdf
+    ( const double & c, const double & t );
 public:				// Function
-    double get_rand_gamma( const double & theta );
+    double get_rand( const double & t );
 };
 
 #endif

@@ -3,104 +3,69 @@
 #include <cmath>
 
 ////////////////////////////////////////////////////////////
-// Static variables
-rand_base * rand_base::singleton( nullptr );
-
-////////////////////////////////////////////////////////////
 // Initializers
 
-rand_gamma::rand_gamma(  ) : t_rand( 0, 1 ), d_x( -1 )
+rand_base::rand_base(  ) : cdf_rand( 0, 1 )
 {
     return;
 }
 
-rand_gamma::~rand_gamma(  )
+rand_base::~rand_base(  )
 {
-    for( auto p = theta_map.begin(  );
-	 p != theta_map.end(  ); ++ p )
-	delete ( p->second );
-
+    for( auto & p : t_map )
+	delete p.second;
     return;
 }
-
-rand_gamma * rand_gamma::get_instance(  )
-{
-    if( singleton == nullptr )
-	singleton = new rand_gamma;
-    return singleton;
-}
-
-void rand_gamma::del_instance(  )
-{
-    if( singleton != nullptr )
-	delete singleton;
-    return;
-}
-
-void rand_gamma::set_intg_pts( const int & n_x )
-{
-    this->n_x = n_x;
-    this->d_x = 1. / n_x;	// Final point is ( 0, 0 )
-    return;
-}
-
-void rand_gamma::set_theta
-( const double & theta0, const double & theta1,
-  const int    & n_theta )
-{
-    this->ln_theta0  = log( theta0 );
-    this->ln_theta1  = log( theta1 );
-    this->n_theta    = n_theta;
-    this->d_ln_theta = ( ln_theta1 - ln_theta0 )
-	             / ( n_theta - 1 );
-    return;
-}
-
 
 ////////////////////////////////////////////////////////////
-// Distribution function
-
+// Distribution function is purely virtual for the base.
     
 ////////////////////////////////////////////////////////////
 // Runge-Kutta integration--specifically designed
 
-void rand_gamma::rk4( double & p, const double & x )
+void rand_base::rk4
+( double & c, const double & x, const double & dx )
 {
-    const double dp0 = pdf( x );
-    const double dp1 = pdf( x - d_x / 2 );
-    const double dp3 = pdf( x - d_x     );
-    p -= d_x * ( dp0 + 4 * dp1 + dp3 ) / 6.;
+    const double dc0 = pdf( x );
+    const double dc1 = pdf( x + dx / 2 );
+    const double dc3 = pdf( x + dx     );
+    c += dx * ( dc0 + 4 * dc1 + dc3 ) / 6.;
     return;
 }
 
-void rand_gamma::intg_single_theta(  )
+//////////////////////////////
+// This function is virtual--we shall do some
+// "pre-/post-processings" when a derived random method is
+// defined.
+// Especially, we MUST initialize c_current.
+
+std::map<double, double> *
+rand_base::intg_single_t( const double & t )
 {
-    double p( 1 );
     auto res = new std::map<double, double>;
-    for( int i = 0; i < n_x; ++ i ) // Better than while
+    for( unsigned i = 0; i < x_vec.size(  ) - 1; ++ i )
     {
-	const double x = 1. - d_x * i;
-	res->insert( std::make_pair( p, x ) );
-	rk4( p, x );
-	if( p < 0 )
-	    break;
+	const double & x = x_vec[ i ]; 
+	const double dx  = x_vec[ i + 1 ] - x;
+	res->insert( std::make_pair( c_current, x ) );
+	rk4( c_current, x, dx );
     }
-    res->insert( std::make_pair( 0., 0. ) );
 
-    theta_map.insert( std::make_pair( ln_theta, res ) );
+    return res;
+}
 
+void rand_base::prepare_intg(  )
+{
     return;
 }
 
-void rand_gamma::integrate(  )
+void rand_base::integrate(  )
 {
-    for( int i = 0; i < n_theta; ++ i )
+    prepare_intg(  );
+    for( auto & t : t_vec )
     {
-	ln_theta = ln_theta0 + d_ln_theta * i;
-	theta    = exp( ln_theta );
-	norm_theta = exp( - 1. / theta )
-	    / boost::math::cyl_bessel_k( 2, 1. / theta );
-    	intg_single_theta(  );
+	auto p = intg_single_t( t );
+    	t_map.insert( std::make_pair( t, p ) );
     }
     return;
 }
@@ -108,53 +73,55 @@ void rand_gamma::integrate(  )
 ////////////////////////////////////////////////////////////
 // Interpolation
 
-double rand_gamma::interp_x
-( const double & y, std::map<double, double> * p )
+double rand_base::interp_single_t
+( const double & c, std::map<double, double> * p )
 {
-    auto q = p->lower_bound( y );
+    auto q = p->lower_bound( c );
     if( q == p->end(  ) )
-	return 1.;
+    {
+	-- q;
+	return q->second;
+    }
     else if( q == p->begin(  ) )
-	return 0.;
+	return q->second;
     else
     {
-	const double y1 = q->first;
+	const double c1 = q->first;
 	const double x1 = q->second;
 	-- q;
-	const double y0 = q->first;
+	const double c0 = q->first;
 	const double x0 = q->second;
-	return x0 + ( x1 - x0 ) / ( y1 - y0 ) * ( y - y0 );
+	return x0 + ( x1 - x0 )  * ( c - c0 ) / ( c1 - c0 );
     }
 }
 
-double rand_gamma::cdf
-( const double & y, const double & lnt )
+double rand_base::interp_cdf
+( const double & c, const double & t )
 {
-    auto p = theta_map.lower_bound( lnt );
-    if( p == theta_map.end(  ) )
-	throw "Electron temperature too high";
-    else if( p == theta_map.begin(  ) )
-	return interp_x( y, p->second );
+    auto p = t_map.lower_bound( t );
+    if( p == t_map.end(  ) )
+    {
+	-- p;
+	return interp_single_t( c, p->second );
+    }
+    else if( p == t_map.begin(  ) )
+	return interp_single_t( c, p->second );
     else
     {
-	const double lnt1 = p->first;
-	const double x1   = interp_x( y, p->second );
+	const double t1 = p->first;
+	const double x1 = interp_single_t( c, p->second );
 	-- p;
-	const double lnt0 = p->first;
-	const double x0   = interp_x( y, p->second );
-	if( x0 > 1 || x1 > 1 )
-	    throw "Interp error";
+	const double t0 = p->first;
+	const double x0 = interp_single_t( c, p->second );
 
-	return x0 + ( x1 - x0 ) *
-	    ( lnt - lnt0 ) / ( lnt1 - lnt0 );
+	return x0 + ( x1 - x0 ) * ( t - t0 ) / ( t1 - t0 );
     }
 }
 
-double rand_gamma::get_rand_gamma( const double & theta )
+double rand_base::get_rand( const double & t )
 {
-    const double t = t_rand( generator );
-    const double x = cdf( t, log( theta ) );
-    return 1. - theta * log( x );
+    const double c = cdf_rand( generator );
+    return interp_cdf( c, t );
 }
 
     

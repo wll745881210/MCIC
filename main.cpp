@@ -91,15 +91,15 @@ int main(  )
     try
     {
 	auto test = rand_gamma::get_instance(  );
-	test->set_intg_pts( 1000 );
-	test->set_theta( 1e-3, 1e0, 5 );
+	test->set_resolution( 1000 );
+	test->set_theta_range( 1e-3, 1e0, 5 );
 	test->integrate(  );
 
 	std::vector<double> res;
-	for( int i = 0; i < 1e6; ++ i )
+	for( int i = 0; i < 1e7; ++ i )
 	    res.push_back( test->get_rand_gamma( 1e0 ) );
 
-	std::ofstream fout( "test.txt" );
+	std::ofstream fout( "test.dat" );
 	for( unsigned i = 0; i < res.size(  ); ++ i )
 	    fout << res[ i ] << '\n';
 	rand_gamma::del_instance(  );
