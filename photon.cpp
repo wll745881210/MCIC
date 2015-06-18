@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <omp.h>
 
 ////////////////////////////////////////////////////////////
 // Static variables
@@ -30,14 +31,16 @@ photon::~photon(  )
 
 void photon::init( input & args )
 {
+    float n_photon( 0. );
     args.find_key( "theta_bb", theta_bb, 2e-6 );
     args.find_key( "r_max"   , r_max,    1.   );
     args.find_key( "scat_max", scat_max, 20   );
-    args.find_key( "n_photon", n_repeat, 20   );
+    args.find_key( "n_photon", n_photon, 20   );
     
     int n_thread( 1 );
     args.find_key( "n_thread", n_thread, 1   );
-    n_repeat = n_repeat / abs( n_thread ) + 1;
+    n_repeat = static_cast<int>
+	( n_photon / abs( n_thread ) + 1 );
 
     args.find_key( "d_tau", d_tau_fiducial, 1e-2 );
     
@@ -141,6 +144,11 @@ void photon::step_walk( const double & tau )
 
 void photon::iterate_photon(  )
 {
+#pragma omp critical
+    std::cout << "There are " << n_repeat << " photons "
+	      << "being simulated on thread "
+	      << omp_get_thread_num(  ) << std::endl;
+
     for( int i = 0; i < n_repeat; ++ i )
     {
 	reset(  );

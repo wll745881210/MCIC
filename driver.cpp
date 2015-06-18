@@ -30,13 +30,13 @@ void driver( input & args )
     p_planck->init( args );
     photon::init( args );
     std::vector<photon> photon_arr( n_thread );
-    std::cout << "Done." << std::endl;
+    std::cout << "Done.\n\n" << std::endl;
 
-    std::cout << "Doing MC simulation... " << std::flush;
+    std::cout << "Doing MC simulation... " << std::endl;
 #pragma omp parallel for
     for( int i = 0; i < n_thread; ++ i )
 	photon_arr[ i ].iterate_photon(  );
-    std::cout << "Done." << std::endl;
+    std::cout << "Done.\n\n" << std::endl;
 
     std::cout << "Dumping data... " << std::flush;
     std::string output_path;
@@ -48,6 +48,6 @@ void driver( input & args )
 	for( unsigned j = 0; j < res.size(  ); ++ j )
 	    fout << res[ j ] << '\n';
     }
-    std::cout << "Done." << std::endl;
+    std::cout << "Done.\n" << std::endl;
     return;
 }

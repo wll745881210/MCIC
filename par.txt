@@ -1,7 +1,8 @@
 PHOTON
 
 Init
-n_photon 1e3
+n_photon 1e8
+n_thread 8
 
 
 
