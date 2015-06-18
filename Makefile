@@ -1,9 +1,9 @@
-CC = g++
-Option = -O3 -Wall -std=c++11
+CC = g++-4.8
+Option = -O3 -Wall -std=c++11 -fopenmp
 
 Objs = main.o rand_base.o rand_gamma.o rand_knscat.o \
 	rand_planck.o electron.o photon.o profile.o \
-	input.o
+	input.o driver.o
 
 Out_file = mcic
 
@@ -15,6 +15,9 @@ main.o : main.cpp
 
 input.o : input.cpp input.h
 	$(CC) $(Option) -c -o input.o input.cpp
+
+driver.o : driver.cpp driver.h
+	$(CC) $(Option) -c -o driver.o driver.cpp
 
 rand_base.o : rand_base.cpp rand_base.h
 	$(CC) $(Option) -c -o rand_base.o rand_base.cpp

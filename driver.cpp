@@ -37,11 +37,11 @@ void driver( input & args )
     for( int i = 0; i < n_thread; ++ i )
 	photon_arr[ i ].iterate_photon(  );
     std::cout << "Done." << std::endl;
-    
+
     std::cout << "Dumping data... " << std::flush;
     std::string output_path;
     args.find_key( "output_path", output_path, "mc.dat" );
-    std::ofstream( output_path.c_str(  ) ) fout;    
+    std::ofstream fout( output_path.c_str(  ) );
     for( int i = 0; i < n_thread; ++ i )
     {
 	auto & res = photon_arr[ i ].get_res(  );
@@ -51,4 +51,3 @@ void driver( input & args )
     std::cout << "Done." << std::endl;
     return;
 }
-

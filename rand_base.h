@@ -41,7 +41,6 @@ protected:
     virtual std::map<double, double> *
     intg_single_t( const double & t );
     virtual void prepare_intg(  );
-public:
     void integrate(  );
 
     ////////// Interpolation //////////

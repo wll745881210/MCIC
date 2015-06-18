@@ -46,6 +46,7 @@ void rand_knscat::init( input & args )
     for( int i = 0; i < n_eta; ++ i )
 	t_vec.push_back( t0 + dt * i );
 
+    this->integrate(  );
     return;
 }
 

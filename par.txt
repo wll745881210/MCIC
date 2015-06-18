@@ -1,10 +1,7 @@
 PHOTON
 
 Init
-tau_max	 0.335
-res_file esc_edd0.3
-itr_max  20
-num_photon 1e8
-n_thread 8
+n_photon 1e3
+
 
 

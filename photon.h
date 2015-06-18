@@ -6,10 +6,9 @@
 #include <array>
 
 #include "rand_planck.h"
+#include "electron.h"
 #include "profile.h"
 #include "input.h"
-
-class electron;
 
 class photon
 {
@@ -19,7 +18,6 @@ private:			// Data
 public:
      photon(  );
     ~photon(  );
-    void reset(  );
     static void init( input & args  );
 
     ////////// Location and momentum //////////
@@ -32,8 +30,6 @@ private:			// Function
     void init_mom(  );		// initial momentum
     void reset(  );
     double radius_c(  );	// reduced r from the center
-public:				// Functor
-    friend class electron;
 
     ////////// Random related //////////
 private:			// Functors

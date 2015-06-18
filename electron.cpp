@@ -71,7 +71,7 @@ void electron::rotate_back_mu_2d
 }
 
 void electron::scatter_ph
-( std::array< double, 3 > & p_ph, const double & theta )
+( std::array< double, 4 > & p_ph, const double & theta )
 {
     auto     ptr_gamma = rand_gamma::get_instance(  );
     const double gamma = ptr_gamma->get_rand_gamma( theta );

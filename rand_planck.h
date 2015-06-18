@@ -19,7 +19,7 @@ private:
 public:
     static rand_planck * get_instance(  );
     static void          del_instance(  );
-    static void init( input & args );
+    void init( input & args );
 
     ////////// PDF related //////////
 private:			// Function

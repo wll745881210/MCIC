@@ -4,7 +4,6 @@
 #include <random>
 #include <array>
 
-#include "photon.h"
 #include "rand_gamma.h"
 #include "rand_knscat.h"
 
@@ -29,8 +28,8 @@ private:			  // Function
     void rotate_back_mu_2d
     ( std::array< double, 4 > & v, const double & mu );
 public:				// Function
-    void scatter_ph
-    ( std::array< double, 3 > & p_ph, const double & theta );
+    void scatter_ph( std::array< double, 4 > & p_ph,
+	             const double & theta );
 };
     
 #endif
