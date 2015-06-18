@@ -2,7 +2,7 @@ CC = g++
 Option = -O3 -Wall -std=c++11
 
 Objs = main.o rand_base.o rand_gamma.o rand_knscat.o \
-	rand_planck.o
+	rand_planck.o electron.o
 
 Out_file = mcic
 
@@ -23,6 +23,9 @@ rand_knscat.o : rand_knscat.cpp rand_knscat.h
 
 rand_planck.o : rand_planck.cpp rand_planck.h
 	$(CC) $(Option) -c -o rand_planck.o rand_planck.cpp
+
+electron.o : electron.cpp electron.h
+	$(CC) $(Option) -c -o electron.o electron.cpp
 
 clean:
 	rm *.o *~ clpt.exe

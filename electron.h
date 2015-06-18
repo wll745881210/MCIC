@@ -2,9 +2,11 @@
 #define ELECTRON_H_
 
 #include <random>
+#include <array>
 
 #include "photon.h"
-#include "my_random.h"
+#include "rand_gamma.h"
+#include "rand_knscat.h"
 
 class electron
 {
@@ -16,21 +18,18 @@ public:
     ////////// Random related //////////
 private:			// Functors
     static std::default_random_engine     generator;
-    std::uniform_real_distribution<double>  mu_rand;
-    std::uniform_real_distribution<double> phi_rand;
+    std::uniform_real_distribution<double> uni_rand;
     
-    ////////// ( E, p ) distribution //////////
-private:			// Data
-    static const double theta_te; // From T_e to Theta
-    double px, py, pz;
-private:			// Functor
-    my_random * 
+    ////////// Scatterings //////////
 private:			  // Function
-    void get_momentum( const double & t_e );
-
-    ////////// Scatter a photon //////////
+    void lorentz_trans
+    ( const double & beta, const double & gamma,
+      const double & mu  , std::array<double, 4> & v );
+    double get_mu_2d( const std::array< double, 4 > v );
+    void rotate_back_mu_2d
+    ( std::array< double, 4 > & v, const double & mu );
 public:				// Function
-    void scatter_ph( photon & ph );
+    void scatter_ph( photon & ph, const double & t_e );
 };
     
 #endif

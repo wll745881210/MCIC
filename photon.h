@@ -3,6 +3,11 @@
 
 #include <random>
 #include <vector>
+#include <array>
+
+#include "rand_planck.h"
+
+class electron;
 
 class photon
 {
@@ -19,13 +24,12 @@ public:
 private:			// Data
     static double tau_max;
     double  x,  y,  z;
-    double px, py, pz;
+    std::array< double, 4 > p;	// Momentum
 private:			// Function
     void set_init_p(  );	// Initial momentum
     double tau_c(  );		// tau from the center
 public:				// Function
-    void set_p( const double & px, const double & py,
-	        const double & pz );
+    friend class electron;
 
     ////////// Random related //////////
 private:			// Functors
