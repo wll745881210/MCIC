@@ -1,6 +1,5 @@
 #include "photon.h"
 #include "rand_planck.h"
-#include "profile.h"
 
 #include <cmath>
 #include <iostream>
@@ -19,6 +18,7 @@ std::default_random_engine photon::generator;
 photon::photon(  ) : exp_rand( 1. ), uni_rand( 0, 1 )
 {
     d_tau_fiducial = 0.01;
+    prof = profile::get_instance(  );
     this->reset(  );
     return;
 }
@@ -30,7 +30,8 @@ photon::~photon(  )
 
 void photon::init_loc(  )
 {
-    x = y = z = 0.;
+    x = { };
+    continue_walking = true;
     return;
 }
 
@@ -41,7 +42,7 @@ void photon::init_mom(  )
 
     // Not necessary, but let it be here for future
     // extension onto non-spherical cases.
-    const double mu  = -1 + 2. * uni_rand( generator );
+    const double mu  = 2 * uni_rand( generator ) - 1;
     const double cmu = sqrt( 1. - mu * mu );
     const double phi = uni_rand( generator ) * 6.28318531;
     
@@ -101,60 +102,69 @@ double photon::radius_c(  )
 void photon::step_walk( const double & tau )
 {
     double tau_gone( 0. );
-    const double & e = p[ 0 ];
 
-    auto p = profile::get_instance(  ) ;
-
-    double rho_ratio = p->rho_ratio( x );
+    double rho_ratio = prof->rho_ratio( x );
     double d_tau     = d_tau_fiducial;
+
+    const double & eta = p[ 0 ]; // photon energy
+
+    // Klein-Nishina factor from Mathematica... messy...
+    const double kn_factor
+	= ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
+	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
+	*log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
     
     while( tau_gone < tau )
     {
-	const double d_x = d_tau / rho_ratio;
+	// Prediction
+        auto x1 = x;
 	for( int i = 0; i < 3; ++ i )
-	    x[ i ] += d_x * p[ i + 1 ] / e;
-	tau_gone += d_tau;
+	    x1[ i ] += d_tau / rho_ratio / kn_factor
+		* p[ i + 1 ] / eta;
+	const double rho_ratio1 = prof->rho_ratio( x1 );
+	// Correction
+	rho_ratio = 0.5 * ( rho_ratio + rho_ratio1 );
+	for( int i = 0; i < 3; ++ i )
+	    x[ i ] += d_tau / rho_ratio / kn_factor
+		* p[ i + 1 ] / eta;
+	// Save for the next step
+	rho_ratio = rho_ratio1;
 	
-	rho_ratio = p->rho_ratio( x );
+	tau_gone += d_tau;
 	if( tau - tau_gone < d_tau )
 	    d_tau = fabs( tau - tau_gone ) * 1.0001;
-	// 1.0001: just to make sure that the loop will end
+	// 1.0001: make sure that the loop won't stuck
+	else if( this->radius_c(  ) > r_max )
+	{
+	    continue_walking = false;
+	    break;
+	}
     }
-
     return;
 }
 
-bool photon::iterate(  )
+void photon::iterate(  )
 {
-    for( int i = 0; i < itr_max; ++ i )
+    for( int i = 0; i < scat_max; ++ i )
     {
 	const double tau = exp_rand( generator );
 	step_walk( tau );
-	if( this->radius_c(  ) > r_max )
+	if( ! continue_walking )
 	    break;
+	const double theta_e = 
     }
-    res.push_back(  )
+    res.push_back( p[ 0 ] );
+    return;
 }
 
-void photon::walk_photon(  )
+void photon::proceed_photon(  )
 {
-    res.resize( itr_max, 0. );
-    
     for( int i = 0; i < n_repeat; ++ i )
     {
 	reset(  );
-	photon_iterate_internal(  );
-	res[ n_itr ] += 1.;
+	iterate(  );
     }
-    
-    for( unsigned i = 0; i < res.size(  ); ++ i )
-	res[ i ] /= n_walk;
     
     return;
 }
 
-
-const std::vector<double> & photon::result(  )
-{
-    return res;
-}

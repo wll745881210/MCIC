@@ -90,9 +90,9 @@ int main(  )
 {
     try
     {
-	// auto test = rand_planck::get_instance(  );
-	// test->set_resolution( 1e2 );
-	// test->integrate(  );
+	auto test = rand_planck::get_instance(  );
+	test->set_resolution( 1e2 );
+	test->integrate(  );
 
 	// std::vector<double> res;
 	// for( int i = 0; i < 1e6; ++ i )
@@ -102,6 +102,9 @@ int main(  )
 	// for( unsigned i = 0; i < res.size(  ); ++ i )
 	//     fout << res[ i ] << '\n';
 	// rand_planck::del_instance(  );
+
+	photon ph_test;
+	ph_test.step_walk( 0.1 );
     }
     catch( const char * err )
     {

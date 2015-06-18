@@ -73,9 +73,7 @@ void electron::rotate_back_mu_2d
 void electron::scatter_ph
 ( photon & ph, const double & theta )
 {
-    static const double theta_t_e( 1.68637e-10 );
     auto     ptr_gamma = rand_gamma::get_instance(  );
-    const double theta = theta_t_e * t_e;
     const double gamma = ptr_gamma->get_rand_gamma( theta );
     const double beta  = sqrt( 1. - 1. / pow( gamma, 2 ) );
     const double mu_e  = uni_rand( generator ) * 2 - 1;

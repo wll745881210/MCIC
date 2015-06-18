@@ -6,6 +6,7 @@
 #include <array>
 
 #include "rand_planck.h"
+#include "profile.h"
 
 class electron;
 
@@ -39,7 +40,7 @@ public:				// Functor
 private:			// Functors
     static std::default_random_engine     generator;
     std::exponential_distribution <double> exp_rand;
-    std::exponential_distribution <double> uni_rand;
+    std::uniform_real_distribution<double> uni_rand;
     
     ////////// Iteration //////////
 private:			// Data
@@ -47,14 +48,17 @@ private:			// Data
     static int n_repeat;
     int n_itr;
     double d_tau_fiducial;
-    
+    bool continue_walking;
 public:			// Function
     void step_walk( const double & d_tau );
-    void step_scat(  );
     void iterate  (  );
 public:				// Function
     void proceed_photon(  );
 
+    ////////// Utilities //////////
+private:
+    profile * prof;
+    
     ////////// Statistics //////////
 private:			// Data
     std::vector<double> res;
