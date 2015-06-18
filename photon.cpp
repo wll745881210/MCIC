@@ -8,6 +8,7 @@
 // Static variables
 double photon::theta_bb( 2e-6 ); // default: k_B T_bb = 1eV
 double photon::r_max   ( 1.   );
+double photon::d_tau_fiducial( 1e-2 );
 int    photon::scat_max ( 20   );
 int    photon::n_repeat( 20   );
 std::default_random_engine photon::generator;
@@ -17,7 +18,6 @@ std::default_random_engine photon::generator;
 
 photon::photon(  ) : exp_rand( 1. ), uni_rand( 0, 1 )
 {
-    d_tau_fiducial = 0.01;
     prof = profile::get_instance(  );
     this->reset(  );
     return;
@@ -27,6 +27,25 @@ photon::~photon(  )
 {
     return;
 }
+
+void photon::init( input & args )
+{
+    args.find_key( "theta_bb", theta_bb, 2e-6 );
+    args.find_key( "r_max"   , r_max,    1.   );
+    args.find_key( "scat_max", scat_max, 20   );
+    args.find_key( "n_photon", n_repeat, 20   );
+    
+    int n_thread( 1 );
+    args.find_key( "n_thread", n_thread, 1   );
+    n_repeat = n_repeat / abs( n_thread ) + 1;
+
+    args.find_key( "d_tau", d_tau_fiducial, 1e-2 );
+    
+    return;
+}
+
+////////////////////////////////////////////////////////////
+// Location and momentum
 
 void photon::init_loc(  )
 {
@@ -61,33 +80,6 @@ void photon::reset(  )
     return;
 }
 
-void photon::set_theta_bb( const double & t_bb )
-{
-    photon::theta_bb = t_bb;
-    return;
-}
-
-void photon::set_max_r( const double & s_max )
-{
-    photon::r_max = s_max;
-    return;
-}
-
-void photon::set_max_scat( const int & i_sca )
-{
-    photon::scat_max = i_sca;
-    return;
-}
-
-void photon::set_n_repeat( const int & i_rep )
-{
-    photon::n_repeat = i_rep;
-    return;
-}
-
-////////////////////////////////////////////////////////////
-// Locations
-
 double photon::radius_c(  )
 {
     double r2( 0. );
@@ -101,6 +93,7 @@ double photon::radius_c(  )
 
 void photon::step_walk( const double & tau )
 {
+    static const double tiny( 1e-4 );
     double tau_gone( 0. );
 
     double rho_ratio = prof->rho_ratio( x );
@@ -109,8 +102,11 @@ void photon::step_walk( const double & tau )
     const double & eta = p[ 0 ]; // photon energy
 
     // Klein-Nishina factor from Mathematica... messy...
-    const double kn_factor
-	= ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
+    double kn_factor( 0. );
+    if( eta < tiny )
+	kn_factor = 1.;
+    else    
+	kn_factor = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
 	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
 	*log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
     
@@ -132,8 +128,8 @@ void photon::step_walk( const double & tau )
 	
 	tau_gone += d_tau;
 	if( tau - tau_gone < d_tau )
-	    d_tau = fabs( tau - tau_gone ) * 1.0001;
-	// 1.0001: make sure that the loop won't stuck
+	    d_tau = fabs( tau - tau_gone ) * ( 1 + tiny );
+	// ( 1 + tiny ): the loop won't stuck
 	if( this->radius_c(  ) > r_max )
 	{
 	    continue_walking = false;
@@ -155,7 +151,7 @@ void photon::iterate_photon(  )
 	    if( ! continue_walking )
 		break;
 	
-	    elec.scatter_ph( ( * this ), prof->theta( x ) );
+	    elec.scatter_ph( this->p, prof->theta( x ) );
 	}
 	res.push_back( p[ 0 ] );
     }
@@ -163,3 +159,7 @@ void photon::iterate_photon(  )
     return;
 }
 
+const std::vector<double> & photon::get_res(  )
+{
+    return res;
+}

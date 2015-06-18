@@ -71,25 +71,24 @@ void electron::rotate_back_mu_2d
 }
 
 void electron::scatter_ph
-( photon & ph, const double & theta )
+( std::array< double, 3 > & p_ph, const double & theta )
 {
     auto     ptr_gamma = rand_gamma::get_instance(  );
     const double gamma = ptr_gamma->get_rand_gamma( theta );
     const double beta  = sqrt( 1. - 1. / pow( gamma, 2 ) );
     const double mu_e  = uni_rand( generator ) * 2 - 1;
     
-    auto & p_ph        = ph.p;
     lorentz_trans( beta, gamma, mu_e, p_ph );
     const double mu_ph = get_mu_2d( p_ph );
 
-    auto ptr_knscat   = rand_knscat::get_instance(  );
-    const double eta  = ph.p[ 0 ];
-    const double mu_s = ptr_knscat->get_rand_mu( eta );
+    auto ptr_knscat    = rand_knscat::get_instance(  );
+    const double & eta = p_ph[ 0 ];
+    const double mu_s  = ptr_knscat->get_rand_mu( eta );
 
     const double f_compton = 1 / ( 1 + eta * ( 1 - mu_s ) );
     p_ph[ 0 ] *= f_compton;
     p_ph[ 1 ]  = p_ph[ 0 ] * mu_s;
-    p_ph[ 1 ]  = p_ph[ 0 ] * sqrt( 1. - mu_s * mu_s );
+    p_ph[ 2 ]  = p_ph[ 0 ] * sqrt( 1. - mu_s * mu_s );
     rotate_back_mu_2d( p_ph, mu_ph );
 
     lorentz_trans( -beta, gamma, mu_e, p_ph );

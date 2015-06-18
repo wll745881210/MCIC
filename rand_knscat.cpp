@@ -25,22 +25,21 @@ void rand_knscat::del_instance(  )
     return;
 }
 
-void rand_knscat::set_resolution( const int & n_mu )
+void rand_knscat::init( input & args )
 {
+    int n_mu( 0 );
+    args.find_key( "kn_mu_res", n_mu, 20 );
     x_vec.clear(  );
-    
     const double dmu = 2. / ( n_mu - 1 );
     for( int i = 0; i < n_mu; ++ i )
 	x_vec.push_back( -1. + dmu * i );
-    return;
-}
 
-void rand_knscat::set_eta_range
-( const double & eta0, const double & eta1,
-  const int    & n_eta )
-{
+    double eta0( 0. ), eta1( 0. );
+    int n_eta( 1 );
+    args.find_key( "kn_eta_min", eta0,  1e-4 );
+    args.find_key( "kn_eta_max", eta1,  1e1  );
+    args.find_key( "kn_eta_res", n_eta, 100  );
     t_vec.clear(  );
-    
     const double t0 = log( eta0 );
     const double t1 = log( eta1 );
     const double dt = ( t1 - t0 ) / ( n_eta - 1 );
@@ -73,9 +72,13 @@ rand_knscat::intg_single_t( const double & t )
     c_current = 0.;
 
     // Normalization comes from Mathematica...
-    norm = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
+    static const double tiny( 1e-7 );
+    if( eta < tiny )
+	norm = 8. / 3.;
+    else
+	norm = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
 	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
-	*log(1 + 2*eta))/pow(eta,3);
+	    *log(1 + 2*eta))/pow(eta,3);
     
     auto res = rand_base::intg_single_t( t );
     res->insert( std::make_pair( 1., 1. ) );

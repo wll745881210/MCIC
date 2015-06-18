@@ -2,7 +2,8 @@ CC = g++
 Option = -O3 -Wall -std=c++11
 
 Objs = main.o rand_base.o rand_gamma.o rand_knscat.o \
-	rand_planck.o electron.o photon.o profile.o
+	rand_planck.o electron.o photon.o profile.o \
+	input.o
 
 Out_file = mcic
 
@@ -11,6 +12,9 @@ main : $(Objs)
 
 main.o : main.cpp
 	$(CC) $(Option) -c -o main.o main.cpp
+
+input.o : input.cpp input.h
+	$(CC) $(Option) -c -o input.o input.cpp
 
 rand_base.o : rand_base.cpp rand_base.h
 	$(CC) $(Option) -c -o rand_base.o rand_base.cpp

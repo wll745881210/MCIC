@@ -26,22 +26,21 @@ void rand_gamma::del_instance(  )
     return;
 }
 
-void rand_gamma::set_resolution( const int & n_x )
+void rand_gamma::init( input & args )
 {
+    int n_x( 0 );
+    args.find_key( "gamma_res", n_x, 100 );
     x_vec.clear(  );
-    
     const double dx = 1. / ( n_x - 1 );
     for( int i = 0; i < n_x; ++ i )
 	x_vec.push_back( 1. - dx * i );
-    return;
-}
 
-void rand_gamma::set_theta_range
-( const double & theta0, const double & theta1,
-  const int    & n_theta )
-{
+    double theta0( 0. ), theta1( 0. );
+    int n_theta( 1 );
+    args.find_key( "theta_e_min", theta0,  1e-2 );
+    args.find_key( "theta_e_max", theta1,  1e1  );
+    args.find_key( "theta_e_res", n_theta, 20   );
     t_vec.clear(  );
-    
     const double t0 = log( theta0 );
     const double t1 = log( theta1 );
     const double dt = ( t1 - t0 ) / ( n_theta - 1 );

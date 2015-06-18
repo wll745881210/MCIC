@@ -25,15 +25,15 @@ void rand_planck::del_instance(  )
     return;
 }
 
-void rand_planck::set_resolution( const int & n_x )
+void rand_planck::init( input & args )
 {
-    x_vec.clear(  );
-    
+    int n_x( 0 );
+    args.find_key( "planck_res", n_x, 100 );
+    x_vec.clear(  );    
     const double dx = 1. / ( n_x - 1 );
     const int max_x = 20;	// "Magic" -> precision lim
     for( int i = 0; i < max_x * n_x; ++ i )
 	x_vec.push_back( max_x - i * dx );
-
     t_vec.push_back( 0 );	// Just let it go.
     return;
 }

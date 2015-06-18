@@ -2,6 +2,7 @@
 #define RAND_KNSCAT_H_
 
 #include "rand_base.h"
+#include "input.h"
 
 #include <random>
 #include <map>
@@ -22,10 +23,7 @@ private:
 public:
     static rand_knscat * get_instance(  );
     static void          del_instance(  );
-    void set_resolution( const int & n_mu );
-    void set_eta_range
-    ( const double & eta0, const double & eta1,
-      const int    & n_eta );
+    void init( input & args );
 
     ////////// PDF related //////////
 private:			// Data

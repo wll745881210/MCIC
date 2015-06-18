@@ -2,6 +2,7 @@
 #define RAND_PLANCK_H_
 
 #include "rand_base.h"
+#include "input.h"
 
 ////////////////////////////////////////////////////////////
 // Planck distribution generator. Basically only using the
@@ -18,7 +19,7 @@ private:
 public:
     static rand_planck * get_instance(  );
     static void          del_instance(  );
-    void set_resolution( const int & n_x );
+    static void init( input & args );
 
     ////////// PDF related //////////
 private:			// Function

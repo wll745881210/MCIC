@@ -2,6 +2,7 @@
 #define RAND_GAMMA_H_
 
 #include "rand_base.h"
+#include "input.h"
 
 #include <random>
 #include <map>
@@ -33,10 +34,7 @@ private:
 public:
     static rand_gamma * get_instance(  );
     static void         del_instance(  );
-    void set_resolution( const int & n_x );
-    void set_theta_range
-    ( const double & theta0, const double & theta1,
-      const int    & n_theta );
+    void init( input & args );
 
     ////////// PDF related //////////
 private:			// Data

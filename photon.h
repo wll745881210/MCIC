@@ -7,6 +7,7 @@
 
 #include "rand_planck.h"
 #include "profile.h"
+#include "input.h"
 
 class electron;
 
@@ -19,10 +20,7 @@ public:
      photon(  );
     ~photon(  );
     void reset(  );
-    static void set_theta_bb( const double & t_bb  );
-    static void set_max_r   ( const double & s_max );
-    static void set_max_scat( const int    & i_sca );
-    static void set_n_repeat( const int    & i_rep );
+    static void init( input & args  );
 
     ////////// Location and momentum //////////
 private:			// Data
@@ -32,6 +30,7 @@ private:			// Data
 private:			// Function
     void init_loc(  );		// initial position
     void init_mom(  );		// initial momentum
+    void reset(  );
     double radius_c(  );	// reduced r from the center
 public:				// Functor
     friend class electron;
@@ -47,9 +46,9 @@ private:			// Data
     static int scat_max;
     static int n_repeat;
     int n_itr;
-    double d_tau_fiducial;
+    static double d_tau_fiducial;
     bool continue_walking;
-private:			// Function & functor
+private:			// Functions & functors
     electron elec;
     void step_walk( const double & d_tau );
 public:				// Function
@@ -59,11 +58,11 @@ public:				// Function
 private:
     profile * prof;
     
-    ////////// Statistics //////////
+    ////////// Data dump and access //////////
 private:			// Data
     std::vector<double> res;
 public:				// Data access
-    
+    const std::vector<double> & get_res(  );
 };
 
 #endif

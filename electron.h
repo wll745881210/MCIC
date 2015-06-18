@@ -29,7 +29,8 @@ private:			  // Function
     void rotate_back_mu_2d
     ( std::array< double, 4 > & v, const double & mu );
 public:				// Function
-    void scatter_ph( photon & ph, const double & theta );
+    void scatter_ph
+    ( std::array< double, 3 > & p_ph, const double & theta );
 };
     
 #endif
