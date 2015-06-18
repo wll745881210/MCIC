@@ -49,11 +49,11 @@ private:			// Data
     int n_itr;
     double d_tau_fiducial;
     bool continue_walking;
-public:			// Function
+private:			// Function & functor
+    electron elec;
     void step_walk( const double & d_tau );
-    void iterate  (  );
 public:				// Function
-    void proceed_photon(  );
+    void iterate_photon(  );
 
     ////////// Utilities //////////
 private:

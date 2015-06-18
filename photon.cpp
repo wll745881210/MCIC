@@ -134,7 +134,7 @@ void photon::step_walk( const double & tau )
 	if( tau - tau_gone < d_tau )
 	    d_tau = fabs( tau - tau_gone ) * 1.0001;
 	// 1.0001: make sure that the loop won't stuck
-	else if( this->radius_c(  ) > r_max )
+	if( this->radius_c(  ) > r_max )
 	{
 	    continue_walking = false;
 	    break;
@@ -143,26 +143,21 @@ void photon::step_walk( const double & tau )
     return;
 }
 
-void photon::iterate(  )
-{
-    for( int i = 0; i < scat_max; ++ i )
-    {
-	const double tau = exp_rand( generator );
-	step_walk( tau );
-	if( ! continue_walking )
-	    break;
-	const double theta_e = 
-    }
-    res.push_back( p[ 0 ] );
-    return;
-}
-
-void photon::proceed_photon(  )
+void photon::iterate_photon(  )
 {
     for( int i = 0; i < n_repeat; ++ i )
     {
 	reset(  );
-	iterate(  );
+	for( int j = 0; j < scat_max; ++ j )
+	{
+	    const double tau = exp_rand( generator );
+	    step_walk( tau );
+	    if( ! continue_walking )
+		break;
+	
+	    elec.scatter_ph( ( * this ), prof->theta( x ) );
+	}
+	res.push_back( p[ 0 ] );
     }
     
     return;

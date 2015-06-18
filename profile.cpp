@@ -50,8 +50,7 @@ double profile::radius( const std::array< double, 3 > & x )
 double profile::rho_ratio
 ( const std::array< double, 3 > & x )
 {
-    const double r = radius( x );
-    return exp( -r );
+    return 1.;
 }
 
 double profile::theta( const std::array< double, 3 > & x )
