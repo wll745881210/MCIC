@@ -33,7 +33,7 @@ private:			// Function
     intg_single_t( const double & t );
     void prepare_intg(  );    
 public:				// Function
-    double get_rand_planck(  );    
+    double get_rand(  );    
 };
 
 

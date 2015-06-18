@@ -12,46 +12,54 @@ class electron;
 class photon
 {
     ////////// Initializer //////////
+private:			// Data
+    static double theta_bb;
 public:
      photon(  );
     ~photon(  );
     void reset(  );
-    static void set_max_tau( const double   & t_max  );
-    static void set_max_itr( const int      & i_max  );
-    static void set_n_walk ( const int      & i_walk );
+    static void set_theta_bb( const double & t_bb  );
+    static void set_max_r   ( const double & s_max );
+    static void set_max_scat( const int    & i_sca );
+    static void set_n_repeat( const int    & i_rep );
 
     ////////// Location and momentum //////////
 private:			// Data
-    static double tau_max;
-    double  x,  y,  z;
-    std::array< double, 4 > p;	// Momentum
+    static double r_max;
+    std::array< double, 3 > x;	// 3-location
+    std::array< double, 4 > p;	// 4-momentum
 private:			// Function
-    void set_init_p(  );	// Initial momentum
-    double tau_c(  );		// tau from the center
-public:				// Function
+    void init_loc(  );		// initial position
+    void init_mom(  );		// initial momentum
+    double radius_c(  );	// reduced r from the center
+public:				// Functor
     friend class electron;
 
     ////////// Random related //////////
 private:			// Functors
     static std::default_random_engine     generator;
     std::exponential_distribution <double> exp_rand;
+    std::exponential_distribution <double> uni_rand;
     
     ////////// Iteration //////////
 private:			// Data
-    static int itr_max;
-    static int n_walk;
+    static int scat_max;
+    static int n_repeat;
     int n_itr;
-private:			// Function
-    bool photon_step(  );
-    void photon_iterate_internal(  );
+    double d_tau_fiducial;
+    
+public:			// Function
+    void step_walk( const double & d_tau );
+    void step_scat(  );
+    void iterate  (  );
 public:				// Function
-    void walk_photon(  );
+    void proceed_photon(  );
 
     ////////// Statistics //////////
 private:			// Data
     std::vector<double> res;
 public:				// Data access
-    static void write_res( std::vector<photon> & ph_list );
+    
 };
 
 #endif

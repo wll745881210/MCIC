@@ -70,7 +70,8 @@ void electron::rotate_back_mu_2d
     return;
 }
 
-void electron::scatter_ph( photon & ph, const double & t_e )
+void electron::scatter_ph
+( photon & ph, const double & theta )
 {
     static const double theta_t_e( 1.68637e-10 );
     auto     ptr_gamma = rand_gamma::get_instance(  );

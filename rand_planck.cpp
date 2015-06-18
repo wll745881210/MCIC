@@ -65,7 +65,7 @@ void rand_planck::prepare_intg(  )
 ////////////////////////////////////////////////////////////
 // And the final output
 
-double rand_planck::get_rand_planck(  )
+double rand_planck::get_rand(  )
 {
     const double c = cdf_rand( generator );
     return interp_single_t( c, res );
