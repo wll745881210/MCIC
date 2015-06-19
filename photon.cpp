@@ -13,6 +13,9 @@ double photon::d_tau_fiducial( 1e-2 );
 int    photon::scat_max ( 20   );
 int    photon::n_repeat( 20   );
 
+std::map<double, unsigned> photon::bin_map;
+std::vector<double>        photon::eta_upper;
+
 ////////////////////////////////////////////////////////////
 // Initializer
 
@@ -42,7 +45,21 @@ void photon::init( input & args )
 	( n_photon / abs( n_thread ) + 1 );
 
     args.find_key( "d_tau", d_tau_fiducial, 1e-2 );
-    
+
+    int n_bin( 0 );
+    double eta_min( 0. ), eta_max( 0. );
+    args.find_key( "n_photon_bin",   n_bin,   100  );
+    args.find_key( "eta_photon_min", eta_min, 1e-7 );
+    args.find_key( "eta_photon_max", eta_max, 1e2  );
+    const double e0 = log( eta_min );
+    const double e1 = log( eta_max );
+    const double de = ( e1 - e0 ) / ( n_bin - 1 );
+    for( int i = 0; i < n_bin; ++ i )
+    {
+	const double eta = exp( e0 + de * i );
+	eta_upper.push_back( eta );
+	bin_map.insert( std::make_pair( eta, i ) );
+    }
     return;
 }
 
@@ -141,6 +158,15 @@ void photon::step_walk( const double & tau )
     return;
 }
 
+void photon::locate_bin( const double & eta )
+{
+    auto p = bin_map.lower_bound( eta );
+    if( p == bin_map.end(  ) )
+	return;
+    ++ res[ p->second ];
+    return;
+}
+
 void photon::iterate_photon(  )
 {
 #pragma omp critical
@@ -148,6 +174,8 @@ void photon::iterate_photon(  )
 	      << "being simulated on thread "
 	      << omp_get_thread_num(  ) << std::endl;
 
+    res.resize( eta_upper.size(  ), 0 );
+    
     for( int i = 0; i < n_repeat; ++ i )
     {
 	reset(  );
@@ -160,13 +188,18 @@ void photon::iterate_photon(  )
 	
 	    elec.scatter_ph( this->p, prof->theta( x ) );
 	}
-	res.push_back( p[ 0 ] );
+	locate_bin( p[ 0 ] );
     }
     
     return;
 }
 
-const std::vector<double> & photon::get_res(  )
+const std::vector<unsigned> & photon::get_res(  )
 {
     return res;
+}
+
+const std::vector<double> & photon::get_eta_upper(  )
+{
+    return eta_upper;
 }

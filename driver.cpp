@@ -42,12 +42,19 @@ void driver( input & args )
     std::string output_path;
     args.find_key( "output_path", output_path, "mc.dat" );
     std::ofstream fout( output_path.c_str(  ) );
+
+    auto & e_upper = photon::get_eta_upper(  );
+    std::vector<double> res( e_upper.size(  ) );
+	
     for( int i = 0; i < n_thread; ++ i )
     {
-	auto & res = photon_arr[ i ].get_res(  );
+	auto & res_i = photon_arr[ i ].get_res(  );
 	for( unsigned j = 0; j < res.size(  ); ++ j )
-	    fout << res[ j ] << '\n';
+	    res[ j ] += res_i[ j ];
     }
+    for( unsigned i = 0; i < res.size(  ); ++ i )
+	fout << e_upper[ i ] << '\t' << res[ i ] << '\n';
+
     std::cout << "Done.\n" << std::endl;
     return;
 }

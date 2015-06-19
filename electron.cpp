@@ -48,7 +48,8 @@ void electron::lorentz_trans
     return;
 }
 
-double electron::get_mu_2d( const std::array< double, 4 > v )
+double electron::get_mu_2d
+( const std::array< double, 4 > v )
 {
     double norm( 0. );
     norm = sqrt( v[ 1 ] * v[ 1 ] + v[ 2 ] * v[ 2 ] );

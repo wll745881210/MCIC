@@ -48,6 +48,7 @@ private:			// Data
 private:			// Functions & functors
     electron elec;
     void step_walk( const double & d_tau );
+    void locate_bin( const double & eta );
 public:				// Function
     void iterate_photon(  );
 
@@ -57,9 +58,13 @@ private:
     
     ////////// Data dump and access //////////
 private:			// Data
-    std::vector<double> res;
+    static std::map<double, unsigned> bin_map;
+    static std::vector<double> eta_upper;
+    // Upper bound of eta
+    std::vector<unsigned> res;
 public:				// Data access
-    const std::vector<double> & get_res(  );
+           const std::vector<unsigned> & get_res(  );
+    static const std::vector<double>   & get_eta_upper(  );
 };
 
 #endif

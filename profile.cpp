@@ -55,5 +55,5 @@ double profile::rho_ratio
 
 double profile::theta( const std::array< double, 3 > & x )
 {
-    return 1.;
+    return 0.5;
 }
