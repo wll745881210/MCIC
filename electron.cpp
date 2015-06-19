@@ -83,7 +83,6 @@ void electron::rotate_back_mu
     R[ 2 ][ 0 ] = mu;
     R[ 2 ][ 1 ] = 0.;
     R[ 2 ][ 2 ] = cmu;
-
     
     for( int i = 0; i < 3; ++ i )
     {
@@ -106,7 +105,7 @@ void electron::scatter_ph
     
     lorentz_trans( beta, gamma, mu_e, phi_e, p_ph );
 
-    auto ptr_knscat    = rand_knscat::get_instance(  );
+    auto    ptr_knscat = rand_knscat::get_instance(  );
     const double & eta = p_ph[ 0 ];
     const double mu_s  = ptr_knscat->get_rand_mu( eta );
     const double cmu_s = sqrt( 1. - mu_s * mu_s );
