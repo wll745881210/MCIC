@@ -26,7 +26,7 @@ public:			  // Function
     ( const double & beta, const double & gamma,
       const double & mu  , const double & phi,
       std::array<double, 4> & v );
-    void rotate_back_mu
+    void rotate_back_ph
     ( std::array< double, 4 > & p_old,
       std::array< double, 4 > & p_new );
 public:				// Function

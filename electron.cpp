@@ -60,7 +60,7 @@ void electron::lorentz_trans
     return;
 }
 
-void electron::rotate_back_mu
+void electron::rotate_back_ph
 ( std::array< double, 4 > & p_old,
   std::array< double, 4 > & p_new )
 {
@@ -122,7 +122,7 @@ void electron::scatter_ph
     p_ph_new[ 3 ] = eta_new * cmu_s * sin( phi_s );
     
     p_ph[ 0 ] = eta_new;
-    rotate_back_mu( p_ph, p_ph_new );
+    rotate_back_ph( p_ph, p_ph_new );
 
     lorentz_trans( -beta, gamma, mu_e, phi_e, p_ph );
         
