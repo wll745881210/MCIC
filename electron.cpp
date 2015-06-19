@@ -4,11 +4,6 @@
 #include <cmath>
 
 ////////////////////////////////////////////////////////////
-// Static variables and functors
-
-std::default_random_engine electron::generator;
-
-////////////////////////////////////////////////////////////
 // Constructor and destructor
 
 electron::electron(  ) : uni_rand( 0, 1 )

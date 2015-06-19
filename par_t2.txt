@@ -1,10 +1,10 @@
 PHOTON
 
 Init
-n_photon    1e7
+n_photon    1e5
 r_max       1
-n_thread    8
-output_path mc_t8.dat
+n_thread    2
+output_path mc_tm.dat
 
 
 

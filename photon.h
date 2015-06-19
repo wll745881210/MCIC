@@ -33,7 +33,7 @@ private:			// Function
 
     ////////// Random related //////////
 private:			// Functors
-    static std::default_random_engine     generator;
+    std::default_random_engine     generator;
     std::exponential_distribution <double> exp_rand;
     std::uniform_real_distribution<double> uni_rand;
     

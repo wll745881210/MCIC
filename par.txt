@@ -1,7 +1,7 @@
 PHOTON
 
 Init
-n_photon    1e7
+n_photon    1e5
 r_max       1
 n_thread    1
 output_path mc_t1.dat

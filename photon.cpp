@@ -12,7 +12,6 @@ double photon::r_max   ( 1.   );
 double photon::d_tau_fiducial( 1e-2 );
 int    photon::scat_max ( 20   );
 int    photon::n_repeat( 20   );
-std::default_random_engine photon::generator;
 
 ////////////////////////////////////////////////////////////
 // Initializer
@@ -59,8 +58,8 @@ void photon::init_loc(  )
 
 void photon::init_mom(  )
 {
-    auto p_planck    = rand_planck::get_instance(  );
-    const double e   = theta_bb * p_planck->get_rand(  );
+    auto p_planck  = rand_planck::get_instance(  );
+    const double e = theta_bb * p_planck->get_rand(  );
 
     // Not necessary, but let it be here for future
     // extension onto non-spherical cases.
