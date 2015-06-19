@@ -3,6 +3,7 @@
 
 #include "rand_base.h"
 #include "input.h"
+#include "seed.h"
 
 ////////////////////////////////////////////////////////////
 // Planck distribution generator. Basically only using the
@@ -16,6 +17,7 @@ class rand_planck : public rand_base
     ////////// Initializers //////////
 private:
     static rand_planck * singleton;
+    rand_planck(  );
 public:
     static rand_planck * get_instance(  );
     static void          del_instance(  );

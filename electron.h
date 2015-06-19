@@ -6,6 +6,7 @@
 
 #include "rand_gamma.h"
 #include "rand_knscat.h"
+#include "seed.h"
 
 class electron
 {
@@ -16,7 +17,7 @@ public:
 
     ////////// Random related //////////
 private:			// Functors
-    std::default_random_engine     generator;
+    std::mt19937 generator;
     std::uniform_real_distribution<double> uni_rand;
     
     ////////// Scatterings //////////

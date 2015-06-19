@@ -3,6 +3,7 @@
 
 #include "rand_base.h"
 #include "input.h"
+#include "seed.h"
 
 #include <random>
 #include <map>
@@ -20,6 +21,7 @@ class rand_knscat : public rand_base
     ////////// Initializers //////////
 private:
     static rand_knscat * singleton;
+    rand_knscat(  );
 public:
     static rand_knscat * get_instance(  );
     static void          del_instance(  );

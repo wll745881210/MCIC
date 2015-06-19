@@ -11,6 +11,12 @@ const double  rand_planck::epsilon  ( 1e-5    );
 ////////////////////////////////////////////////////////////
 // Initializers
 
+rand_planck::rand_planck(  )
+{
+    generator.seed( rand_seed::get_seed( "planck" ) );
+    return;
+}
+
 rand_planck * rand_planck::get_instance(  )
 {
     if( singleton == nullptr )

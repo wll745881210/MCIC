@@ -19,7 +19,7 @@ int    photon::n_repeat( 20   );
 photon::photon(  ) : exp_rand( 1. ), uni_rand( 0, 1 )
 {
     prof = profile::get_instance(  );
-    this->reset(  );
+    generator.seed( rand_seed::get_seed( "photon" ) );
     return;
 }
 

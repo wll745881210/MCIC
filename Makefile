@@ -3,7 +3,7 @@ Option = -O3 -Wall -std=c++11 -fopenmp
 
 Objs = main.o rand_base.o rand_gamma.o rand_knscat.o \
 	rand_planck.o electron.o photon.o profile.o \
-	input.o driver.o
+	input.o driver.o seed.o
 
 Out_file = mcic
 
@@ -39,6 +39,9 @@ photon.o : photon.cpp photon.h
 
 profile.o : profile.cpp profile.h
 	$(CC) $(Option) -c -o profile.o profile.cpp
+
+seed.o : seed.cpp seed.h
+	$(CC) $(Option) -c -o seed.o seed.cpp
 
 clean:
 	rm *.o *~ clpt.exe

@@ -11,6 +11,12 @@ rand_knscat * rand_knscat::singleton( nullptr );
 ////////////////////////////////////////////////////////////
 // Initializer
 
+rand_knscat::rand_knscat(  )
+{
+    generator.seed( rand_seed::get_seed( "knscat" ) );
+    return;
+}
+
 rand_knscat * rand_knscat::get_instance(  )
 {
     if( singleton == nullptr )

@@ -3,6 +3,7 @@
 
 #include "rand_base.h"
 #include "input.h"
+#include "seed.h"
 
 #include <random>
 #include <map>
@@ -31,6 +32,7 @@ class rand_gamma : public rand_base
     ////////// Initializers //////////
 private:
     static rand_gamma * singleton;
+    rand_gamma(  );
 public:
     static rand_gamma * get_instance(  );
     static void         del_instance(  );

@@ -8,6 +8,7 @@
 
 electron::electron(  ) : uni_rand( 0, 1 )
 {
+    generator.seed( rand_seed::get_seed( "electron" ) );
     return;
 }
 

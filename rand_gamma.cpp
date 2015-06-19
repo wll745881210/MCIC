@@ -12,6 +12,12 @@ rand_gamma * rand_gamma::singleton( nullptr );
 ////////////////////////////////////////////////////////////
 // Initializers
 
+rand_gamma::rand_gamma(  )
+{
+    generator.seed( rand_seed::get_seed( "gamma" ) );
+    return;
+}
+
 rand_gamma * rand_gamma::get_instance(  )
 {
     if( singleton == nullptr )

@@ -9,6 +9,7 @@
 #include "electron.h"
 #include "profile.h"
 #include "input.h"
+#include "seed.h"
 
 class photon
 {
@@ -18,7 +19,7 @@ private:			// Data
 public:
      photon(  );
     ~photon(  );
-    static void init( input & args  );
+    static void init( input & args );
 
     ////////// Location and momentum //////////
 private:			// Data
@@ -33,7 +34,7 @@ private:			// Function
 
     ////////// Random related //////////
 private:			// Functors
-    std::default_random_engine     generator;
+    std::mt19937 generator;
     std::exponential_distribution <double> exp_rand;
     std::uniform_real_distribution<double> uni_rand;
     
