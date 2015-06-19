@@ -25,9 +25,11 @@ void driver( input & args )
     auto p_gamma  = rand_gamma ::get_instance(  );
     auto p_knscat = rand_knscat::get_instance(  );
     auto p_planck = rand_planck::get_instance(  );
+    auto p_prof   = profile    ::get_instance(  );
     p_gamma ->init( args );
     p_knscat->init( args );
     p_planck->init( args );
+    p_prof  ->init( args );
     photon::init( args );
     std::vector<photon> photon_arr( n_thread );
     std::cout << "Done.\n\n" << std::endl;

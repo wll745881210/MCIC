@@ -1,9 +1,11 @@
 #include "input.h"
 #include "driver.h"
+#include "electron.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 #include <fstream>
 
 ////////////////////////////////////////////////////////////
@@ -37,9 +39,9 @@ int main( int argn, char * argv[  ] )
 // {
 //     try
 //     {
-// 	auto test = rand_planck::get_instance(  );
-// 	test->set_resolution( 1e2 );
-// 	test->integrate(  );
+// 	// auto test = rand_planck::get_instance(  );
+// 	// test->set_resolution( 1e2 );
+// 	// test->integrate(  );
 
 // 	// std::vector<double> res;
 // 	// for( int i = 0; i < 1e6; ++ i )
@@ -50,9 +52,12 @@ int main( int argn, char * argv[  ] )
 // 	//     fout << res[ i ] << '\n';
 // 	// rand_planck::del_instance(  );
 
-// 	photon ph_test;
-// 	ph_test.step_walk( 0.1 );
-//     }
+// electron test;
+// std::array<double, 4> a = { 3.3, 2.2, 1.1, 0.5 };
+// test.scatter_ph( a, 1 );
+
+// }
+
 //     catch( const char * err )
 //     {
 // 	std::cerr << "\nError: " << err << std::endl;

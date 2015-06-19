@@ -11,6 +11,8 @@
 // If you want to use interpolation functions for them,
 // go for it by modifying this file and "profile.cpp".
 
+#include "input.h"
+
 #include <array>
 
 class profile
@@ -23,8 +25,13 @@ private:
 public:				// Function
     static profile * get_instance(  );
     static void      del_instance(  );
+    void init( input & args );
 
     ////////// Profile values //////////
+private:			// Data
+    double r_core;
+    double theta_cap, theta_norm;
+    double n_core, n_pow;
 private:			// Function
     double radius( const std::array< double, 3 > & x );
 public:				// Function

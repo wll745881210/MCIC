@@ -21,13 +21,14 @@ private:			// Functors
     std::uniform_real_distribution<double> uni_rand;
     
     ////////// Scatterings //////////
-private:			  // Function
+public:			  // Function
     void lorentz_trans
     ( const double & beta, const double & gamma,
-      const double & mu  , std::array<double, 4> & v );
-    double get_mu_2d( const std::array< double, 4 > v );
-    void rotate_back_mu_2d
-    ( std::array< double, 4 > & v, const double & mu );
+      const double & mu  , const double & phi,
+      std::array<double, 4> & v );
+    void rotate_back_mu
+    ( std::array< double, 4 > & p_old,
+      std::array< double, 4 > & p_new );
 public:				// Function
     void scatter_ph( std::array< double, 4 > & p_ph,
 	             const double & theta );
