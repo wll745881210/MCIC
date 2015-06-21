@@ -75,7 +75,7 @@ void electron::rotate_back_ph
     
     std::array< std::array< double, 3 >, 3 > R = {};
     R[ 0 ][ 0 ] = cmu * cphi;
-    R[ 0 ][ 1 ] = sphi;
+    R[ 0 ][ 1 ] = -sphi;
     R[ 0 ][ 2 ] = -cphi * mu;
     R[ 1 ][ 0 ] = sphi * cmu;
     R[ 1 ][ 1 ] = cphi;

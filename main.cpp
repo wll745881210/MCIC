@@ -1,6 +1,7 @@
 #include "input.h"
 #include "driver.h"
 #include "electron.h"
+#include "rand_gamma.h"
 
 #include <iostream>
 #include <string>

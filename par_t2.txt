@@ -1,12 +1,12 @@
 PHOTON
 
 Init
-n_photon    1e7
-theta_cap   0.5
-theta_norm  0.5
+n_photon    1e9
+theta_cap   0.25
+theta_norm  0.25
 n_pow       0
 r_core      1
-r_max       0.99
+EGSr_max       0.99
 scat_max    10
 gamma_res   1000
 theta_e_res 100

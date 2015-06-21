@@ -3,8 +3,7 @@ PHOTON
 Init
 n_photon    1e5
 r_max       1
-n_thread    1
-output_path mc_t1.dat
-
-
+n_thread    8
+output_path mc.dat
+kn_mu_res   100
 
