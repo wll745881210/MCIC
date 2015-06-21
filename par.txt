@@ -15,7 +15,7 @@ kn_eta_max  200
 kn_eta_res  100
 theta_bb    2e-5
 n_thread    8
-output_path mc_tm.dat
+output_path mc_fiducial.dat
 
 
 
