@@ -39,8 +39,7 @@ void profile::del_instance(  )
 void profile::init( input & args )
 {
     args.find_key( "r_core",     r_core,      1e2  );
-    args.find_key( "theta_norm", theta_norm,  0.5  );
-    args.find_key( "theta_cap",  theta_cap,   0.5  );
+    args.find_key( "theta_core", theta_core,  0.5  );
     args.find_key( "n_pow",      n_pow,      -1.25 );
     n_core = 1.;		// Definition...    
 
@@ -63,13 +62,11 @@ double profile::rho_ratio
 ( const std::array< double, 3 > & x )
 {
     const double r   = radius( x );
-    const double n_r = n_core * pow( r / r_core, n_pow );
-    return std::min( n_core, n_r );
+    return n_core * pow( r / r_core, n_pow );
 }
 
 double profile::theta( const std::array< double, 3 > & x )
 {
     const double r   = radius( x );
-    const double t_r = theta_norm / ( r / r_core );
-    return std::min( theta_cap, t_r );
+    return theta_core / ( r / r_core );
 }

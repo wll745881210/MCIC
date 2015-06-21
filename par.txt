@@ -1,9 +1,21 @@
 PHOTON
 
 Init
-n_photon    1e5
-r_max       1
-n_thread    8
-output_path mc.dat
+n_photon    1e7
+theta_cap   0.25
+theta_norm  0.25
+n_pow       0
+r_core      1
+EGSr_max       0.99
+scat_max    10
+gamma_res   1000
+theta_e_res 100
 kn_mu_res   100
+kn_eta_max  200
+kn_eta_res  100
+theta_bb    2e-5
+n_thread    8
+output_path mc_tm.dat
+
+
 

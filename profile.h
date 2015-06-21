@@ -30,7 +30,7 @@ public:				// Function
     ////////// Profile values //////////
 private:			// Data
     double r_core;
-    double theta_cap, theta_norm;
+    double theta_core;
     double n_core, n_pow;
 private:			// Function
     double radius( const std::array< double, 3 > & x );
