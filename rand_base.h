@@ -22,7 +22,7 @@ public:
     ////////// Distribution function //////////
 private:			// PDF and conversion
     virtual double pdf( const double & x ) = 0;
-    // x := exp( - ( gamma - 1 ) / theta ).
+    // x := desired random variable
 
     ////////// Uniform random generator //////////
 protected:			// Functor
