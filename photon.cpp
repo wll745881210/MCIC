@@ -119,23 +119,16 @@ void photon::step_walk( const double & tau )
     double rho_ratio = prof->rho_ratio( x );
     double d_tau     = d_tau_fiducial;
 
-    // const double & eta = p[ 0 ]; // photon energy
+    const double & eta = p[ 0 ]; // photon energy
 
     // Klein-Nishina factor from Mathematica... messy...
     double kn_factor( 0. );
-
-    const double eta = 1e-3;
     if( eta < tiny )
 	kn_factor = 1.;
     else    
 	kn_factor = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
 	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
 	    *log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
-
-    std::cout << "kn_factor " << kn_factor << std::endl;
-
-    throw "Test finished.";
-    
     
     while( tau_gone < tau )
     {
