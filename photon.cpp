@@ -13,7 +13,7 @@ double photon::d_tau_fiducial( 1e-2 );
 int    photon::scat_max ( 20   );
 int    photon::n_repeat( 20   );
 
-std::map<double, unsigned> photon::bin_map;
+std::map<double, photon::uint> photon::bin_map;
 std::vector<double>        photon::eta_upper;
 
 ////////////////////////////////////////////////////////////
@@ -194,7 +194,7 @@ void photon::iterate_photon(  )
     return;
 }
 
-const std::vector<unsigned> & photon::get_res(  )
+const std::vector<photon::uint> & photon::get_res(  )
 {
     return res;
 }

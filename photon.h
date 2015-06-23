@@ -57,14 +57,16 @@ private:
     profile * prof;
     
     ////////// Data dump and access //////////
+public:
+    typedef unsigned long long uint;
 private:			// Data
-    static std::map<double, unsigned> bin_map;
+    static std::map<double, uint> bin_map;
     static std::vector<double> eta_upper;
     // Upper bound of eta
-    std::vector<unsigned> res;
+    std::vector<uint> res;
 public:				// Data access
-           const std::vector<unsigned> & get_res(  );
-    static const std::vector<double>   & get_eta_upper(  );
+           const std::vector<uint  > & get_res(  );
+    static const std::vector<double> & get_eta_upper(  );
 };
 
 #endif
