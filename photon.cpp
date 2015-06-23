@@ -11,7 +11,8 @@ double photon::theta_bb( 2e-6 ); // default: k_B T_bb = 1eV
 double photon::r_max   ( 1.   );
 double photon::d_tau_fiducial( 1e-2 );
 int    photon::scat_max ( 20   );
-int    photon::n_repeat( 20   );
+
+photon::uint photon::n_repeat( 20 );
 
 std::map<double, photon::uint> photon::bin_map;
 std::vector<double>        photon::eta_upper;
@@ -41,7 +42,7 @@ void photon::init( input & args )
     
     int n_thread( 1 );
     args.find_key( "n_thread", n_thread, 1   );
-    n_repeat = static_cast<int>
+    n_repeat = static_cast<uint>
 	( n_photon / abs( n_thread ) + 1 );
 
     args.find_key( "d_tau", d_tau_fiducial, 1e-2 );
@@ -118,16 +119,23 @@ void photon::step_walk( const double & tau )
     double rho_ratio = prof->rho_ratio( x );
     double d_tau     = d_tau_fiducial;
 
-    const double & eta = p[ 0 ]; // photon energy
+    // const double & eta = p[ 0 ]; // photon energy
 
     // Klein-Nishina factor from Mathematica... messy...
     double kn_factor( 0. );
+
+    const double eta = 1e-3;
     if( eta < tiny )
 	kn_factor = 1.;
     else    
 	kn_factor = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
 	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
-	*log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
+	    *log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
+
+    std::cout << "kn_factor " << kn_factor << std::endl;
+
+    throw "Test finished.";
+    
     
     while( tau_gone < tau )
     {
@@ -176,7 +184,7 @@ void photon::iterate_photon(  )
 
     res.resize( eta_upper.size(  ), 0 );
     
-    for( int i = 0; i < n_repeat; ++ i )
+    for( uint i = 0; i < n_repeat; ++ i )
     {
 	reset(  );
 	for( int j = 0; j < scat_max; ++ j )

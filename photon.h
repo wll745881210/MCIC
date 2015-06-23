@@ -13,6 +13,10 @@
 
 class photon
 {
+    ////////// typedef //////////
+public:
+    typedef unsigned long long uint;
+    
     ////////// Initializer //////////
 private:			// Data
     static double theta_bb;
@@ -40,9 +44,8 @@ private:			// Functors
     
     ////////// Iteration //////////
 private:			// Data
-    static int scat_max;
-    static int n_repeat;
-    int n_itr;
+    static int    scat_max;
+    static uint   n_repeat;
     static double d_tau_fiducial;
     bool continue_walking;
 private:			// Functions & functors
@@ -57,8 +60,7 @@ private:
     profile * prof;
     
     ////////// Data dump and access //////////
-public:
-    typedef unsigned long long uint;
+
 private:			// Data
     static std::map<double, uint> bin_map;
     static std::vector<double> eta_upper;
