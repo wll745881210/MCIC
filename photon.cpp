@@ -3,26 +3,30 @@
 
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include <omp.h>
 
 ////////////////////////////////////////////////////////////
 // Static variables
 double photon::theta_bb( 2e-6 ); // default: k_B T_bb = 1eV
-double photon::r_max   ( 1.   );
+double photon::r_max  ( 1. );
+double photon::r_disk_max( 0. );
+double photon::r_disk_min( 0. );
 double photon::d_tau_fiducial( 1e-2 );
-int    photon::scat_max ( 20   );
+int    photon::scat_max( 20 );
 
 photon::uint photon::n_repeat( 20 );
 
 std::map<double, photon::uint> photon::bin_map;
 std::vector<double>        photon::eta_upper;
 
+profile * photon::prof;
+
 ////////////////////////////////////////////////////////////
 // Initializer
 
 photon::photon(  ) : exp_rand( 1. ), uni_rand( 0, 1 )
 {
-    prof = profile::get_instance(  );
     generator.seed( rand_seed::get_seed( "photon" ) );
     return;
 }
@@ -34,9 +38,10 @@ photon::~photon(  )
 
 void photon::init( input & args )
 {
+    prof = profile::get_instance(  );
+
     float n_photon( 0. );
     args.find_key( "theta_bb", theta_bb, 2e-6 );
-    args.find_key( "r_max"   , r_max,    1.   );
     args.find_key( "scat_max", scat_max, 20   );
     args.find_key( "n_photon", n_photon, 20   );
     
@@ -47,6 +52,7 @@ void photon::init( input & args )
 
     args.find_key( "d_tau", d_tau_fiducial, 1e-2 );
 
+    // Rebinning parameters
     int n_bin( 0 );
     double eta_min( 0. ), eta_max( 0. );
     args.find_key( "n_photon_bin",   n_bin,   100  );
@@ -61,6 +67,12 @@ void photon::init( input & args )
 	eta_upper.push_back( eta );
 	bin_map.insert( std::make_pair( eta, i ) );
     }
+
+    // Disk as radiation source
+    args.find_key( "r_disk_min", r_disk_min, 0. );
+    args.find_key( "r_disk_max", r_disk_max, 0. );
+
+    r_max = prof->get_rmax(  );
     return;
 }
 
@@ -69,7 +81,11 @@ void photon::init( input & args )
 
 void photon::init_loc(  )
 {
-    x = { };
+    const double r   = r_disk_min + 
+	uni_rand( generator ) * ( r_disk_max - r_disk_min );
+    const double phi = uni_rand( generator ) * 6.28318531;
+	
+    x = { r * cos( phi ), r * sin( phi ), 0. };
     continue_walking = true;
     return;
 }

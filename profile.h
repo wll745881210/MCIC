@@ -30,13 +30,16 @@ public:				// Function
     ////////// Profile values //////////
 private:			// Data
     double r_core;
-    double theta_core;
-    double n_core, n_pow;
+    double r_max,       tau_max;
+    double theta_r_max, n_core;
+    double theta_pow,   n_pow;
 private:			// Function
     double radius( const std::array< double, 3 > & x );
+    void   obtain_rmax(  );
 public:				// Function
     double rho_ratio( const std::array< double, 3 > & x );
     double theta    ( const std::array< double, 3 > & x );
+    double get_rmax(  );
 };
 
 #endif

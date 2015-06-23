@@ -57,8 +57,7 @@ void input::get_items(  )
     {
         getline( fin, line_temp );
         
-        if( line_temp == "" || line_temp[ 0 ] == ' '
-            || line_temp[ 0 ] == '\t' )
+        if( line_temp == "End" )
             break;
 
         ss.clear(  );

@@ -30,6 +30,7 @@ void driver( input & args )
     p_knscat->init( args );
     p_planck->init( args );
     p_prof  ->init( args );
+    
     photon::init( args );
     std::vector<photon> photon_arr( n_thread );
     std::cout << "Done.\n\n" << std::endl;
