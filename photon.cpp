@@ -81,8 +81,12 @@ void photon::init( input & args )
 
 void photon::init_loc(  )
 {
-    const double r   = r_disk_min + 
-	uni_rand( generator ) * ( r_disk_max - r_disk_min );
+    const double r_arg = pow( r_disk_min, -0.25 ) +
+	uni_rand( generator ) *
+	( pow( r_disk_max, -0.25 )
+	    - pow( r_disk_min, -0.25 ) );
+    
+    const double r = pow( r_arg, -4 );
     const double phi = uni_rand( generator ) * 6.28318531;
 	
     x = { r * cos( phi ), r * sin( phi ), 0. };
