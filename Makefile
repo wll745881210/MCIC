@@ -44,4 +44,4 @@ seed.o : seed.cpp seed.h
 	$(CC) $(Option) -c -o seed.o seed.cpp
 
 clean:
-	rm *.o *~ clpt.exe
+	rm *.o *~ mcic
