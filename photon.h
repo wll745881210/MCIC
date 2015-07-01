@@ -29,7 +29,7 @@ public:
 
     ////////// Location and momentum //////////
 private:			// Data
-    static double r_max;
+    static double r_max,      r_min;
     static double r_disk_max, r_disk_min;
     std::array< double, 3 > x;	// 3-location
     std::array< double, 4 > p;	// 4-momentum

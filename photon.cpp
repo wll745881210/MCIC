@@ -8,13 +8,13 @@
 
 ////////////////////////////////////////////////////////////
 // Static variables
-double photon::theta_bb( 2e-6 ); // default: k_B T_bb = 1eV
-double photon::r_max  ( 1. );
-double photon::r_disk_max( 0. );
-double photon::r_disk_min( 0. );
-double photon::d_tau_fiducial( 1e-2 );
-int    photon::scat_max( 20 );
-
+double photon::theta_bb      ( 2e-6 ); // 1eV in me c^2
+double photon::r_max         ( 1. );
+double photon::r_min         ( 1. );
+double photon::r_disk_max    ( 0. );
+double photon::r_disk_min    ( 0. );
+double photon::d_tau_fiducial( 0. );
+int    photon::scat_max      ( 20 );
 photon::uint photon::n_repeat( 20 );
 
 std::map<double, photon::uint> photon::bin_map;
@@ -72,7 +72,8 @@ void photon::init( input & args )
     args.find_key( "r_disk_min", r_disk_min, 0. );
     args.find_key( "r_disk_max", r_disk_max, 0. );
 
-    r_max = prof->get_rmax(  );
+    args.find_key( "r_max", r_max, 3.1e18       );
+    args.find_key( "r_min", r_min, 1e-4 * r_max );
     return;
 }
 
@@ -82,14 +83,14 @@ void photon::init( input & args )
 void photon::init_loc(  )
 {
     const double r_arg = pow( r_disk_min, -0.25 ) +
-	uni_rand( generator ) *
-	( pow( r_disk_max, -0.25 )
-	    - pow( r_disk_min, -0.25 ) );
-    
-    const double r = pow( r_arg, -4 );
-    const double phi = uni_rand( generator ) * 6.28318531;
-	
+    	uni_rand( generator ) *
+    	( pow( r_disk_max, -0.25 )
+    	    - pow( r_disk_min, -0.25 ) );
+    const double r   = pow( r_arg, -4 );
+    const double phi = uni_rand( generator ) * 6.28319;
     x = { r * cos( phi ), r * sin( phi ), 0. };
+    
+    x = { 0., 0., 0. };
     continue_walking = true;
     return;
 }
@@ -134,47 +135,62 @@ double photon::radius_c(  )
 void photon::step_walk( const double & tau )
 {
     static const double tiny( 1e-4 );
-    double tau_gone( 0. );
 
-    double rho_ratio = prof->rho_ratio( x );
-    double d_tau     = d_tau_fiducial;
-
+    //////////////////////////////////////////////////
+    // Calculate the cross section
     const double & eta = p[ 0 ]; // photon energy
-
     // Klein-Nishina factor from Mathematica... messy...
     double kn_factor( 0. );
     if( eta < tiny )
 	kn_factor = 1.;
-    else    
+    else
 	kn_factor = ((2*eta*(2 + eta*(1 + eta)*(8 + eta)))
 	    /pow(1 + 2*eta,2) + (-2 + (-2 + eta)*eta)
 	    *log(1 + 2*eta))/pow(eta,3) / ( 8. / 3. );
+    const double sigma = kn_factor * 6.65246e-25;
+    // Cross section in cm**2 ( = kn * sigma_T )
+    //////////////////////////////////////////////////
+
+    double d_tau( d_tau_fiducial ), dx( 0. );
+    double tau_gone( 0. );
+    double n_e0 = prof->n_e( x );
     
     while( tau_gone < tau )
     {
-	// Prediction
-        auto x1 = x;
+	const double r = radius_c(  );
+	if( r > r_max )
+	{
+	    continue_walking = false;
+	    break;
+	}
+	else if( r < r_min )
+	{
+	    dx = r_min / 100.;
+	    for( int i = 0; i < 3; ++ i )
+		x[ i ] += dx * p[ i + 1 ] / eta;
+	    continue;
+	}
+	
+	// Predictor
+        auto x_pre = x;
+	dx = d_tau / ( n_e0 * sigma );
 	for( int i = 0; i < 3; ++ i )
-	    x1[ i ] += d_tau / rho_ratio / kn_factor
-		* p[ i + 1 ] / eta;
-	const double rho_ratio1 = prof->rho_ratio( x1 );
-	// Correction
-	rho_ratio = 0.5 * ( rho_ratio + rho_ratio1 );
+	    x_pre[ i ] += dx * p[ i + 1 ] / eta;
+	const double n_e1 = prof->n_e( x_pre );
+	// Corrector
+	n_e0 = 0.5 * ( n_e0 + n_e1 );
+	dx = d_tau / ( n_e0 * sigma );
 	for( int i = 0; i < 3; ++ i )
-	    x[ i ] += d_tau / rho_ratio / kn_factor
-		* p[ i + 1 ] / eta;
+	    x[ i ] += dx * p[ i + 1 ] / eta;
 	// Save for the next step
-	rho_ratio = rho_ratio1;
+	n_e0 = n_e1;
 	
 	tau_gone += d_tau;
 	if( tau - tau_gone < d_tau )
 	    d_tau = fabs( tau - tau_gone ) * ( 1 + tiny );
 	// ( 1 + tiny ): the loop won't stuck
-	if( this->radius_c(  ) > r_max )
-	{
-	    continue_walking = false;
-	    break;
-	}
+
+
     }
     return;
 }

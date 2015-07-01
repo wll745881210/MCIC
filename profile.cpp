@@ -37,16 +37,15 @@ void profile::del_instance(  )
 
 void profile::init( input & args )
 {
-    // Since n = const in r_core, and due to normalization,
-    // tau_core and r_core are identical.
-    args.find_key( "tau_core",    r_core,      1e-1 );
-    args.find_key( "tau_max",     tau_max,     1.   );
-    args.find_key( "theta_r_max", theta_r_max, 0.5  );
-    args.find_key( "n_pow",       n_pow,       0.   );
-    args.find_key( "theta_pow",   theta_pow,   0.   );
-    n_core = 1.;		// Definition...    
+    // All in CGS...
+    args.find_key( "r_fid",       r_fid,       1. );
+    args.find_key( "n_fid",       n_fid,       1. );
+    args.find_key( "theta_fid",   theta_fid,   1. );
+    args.find_key( "n_pow_inner", n_pow_inner, 0. );
+    args.find_key( "n_pow_outer", n_pow_outer, 0. );
+    args.find_key( "t_pow_inner", t_pow_inner, 0. );
+    args.find_key( "t_pow_outer", t_pow_outer, 0. );
 
-    obtain_rmax(  );
     return;
 }
 
@@ -54,53 +53,27 @@ void profile::init( input & args )
 // Get the values.
 // If you want to use it for further purposes, modify here.
 
-void profile::obtain_rmax(  )
-{
-    double tau( 0. );
-    std::array<double, 3> x = {};
-
-    double rho_ratio0 = rho_ratio( x );
-    static const double d_tau( 1e-2 );
-    while( tau < tau_max )
-    {
-	// Predictor
-	const double r_current = x[ 0 ];
-	x[ 0 ] += d_tau / rho_ratio0;
-	const double rho_ratio1 = rho_ratio( x );
-	// Corrector
-	rho_ratio0 = 0.5 * ( rho_ratio0 + rho_ratio1 );
-	x[ 0 ] = r_current + d_tau / rho_ratio0;
-	// Save for the next step
-	rho_ratio0 = rho_ratio1;
-	tau += d_tau;
-    }
-    r_max = x[ 0 ];
-    return;
-}
-
-
 double profile::radius( const std::array< double, 3 > & x )
 {
     double r2( 0. );
     for( int i = 0; i < 3; ++ i )
 	r2 += x[ i ] * x[ i ];
-    return std::max( sqrt( r2 ), r_core );
+    return sqrt( r2 );
 }
 
-double profile::rho_ratio
+double profile::n_e
 ( const std::array< double, 3 > & x )
 {
     const double r = radius( x );
-    return n_core * pow( r / r_core, n_pow );
+    const double idx
+	= ( r > r_fid ? n_pow_outer : n_pow_inner );
+    return n_fid * pow( r / r_fid, idx );
 }
 
 double profile::theta( const std::array< double, 3 > & x )
 {
     const double r = radius( x );
-    return theta_r_max * pow( r / r_max, theta_pow );
-}
-
-double profile::get_rmax(  )
-{
-    return r_max;
+    const double idx
+	= ( r > r_fid ? t_pow_outer : t_pow_inner );
+    return theta_fid * pow( r / r_fid, idx );
 }
