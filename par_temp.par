@@ -14,12 +14,12 @@ t_pow_inner -0.5
 n_pow_inner -0.5
 t_pow_outer -1
 n_pow_outer -1.25
-r_fid 1.31215e+17
-n_fid 2.75762e+06
-theta_fid 0.0266325
+r_fid 7.53632e+16
+n_fid 1.10305e+07
+theta_fid 0.0463699
 r_disk_min 2.954e+14
 r_disk_max 2.954e+16
 r_max 5.908e+16
 r_min 2.954e+14
 r_eh 2.954e+13
-output_path mc_ledd1.0e-02_n01.0e+06.dat
+output_path mc_ledd1.0e-02_n02.0e+06.dat

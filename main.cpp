@@ -20,7 +20,7 @@ int main( int argn, char * argv[  ] )
 	    throw "Incorrect input parameter.\n"
 		"See README for usage.";
 	else if( argn < 2 )
-	    par_file_name = "par.txt";
+	    par_file_name = "par.par";
 	else
 	    par_file_name = argv[ 1 ];
 
