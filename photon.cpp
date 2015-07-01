@@ -11,6 +11,7 @@
 double photon::theta_bb      ( 2e-6 ); // 1eV in me c^2
 double photon::r_max         ( 1. );
 double photon::r_min         ( 1. );
+double photon::r_eh          ( 1. );
 double photon::r_disk_max    ( 0. );
 double photon::r_disk_min    ( 0. );
 double photon::d_tau_fiducial( 0. );
@@ -74,6 +75,7 @@ void photon::init( input & args )
 
     args.find_key( "r_max", r_max, 3.1e18       );
     args.find_key( "r_min", r_min, 1e-4 * r_max );
+    args.find_key( "r_eh" , r_eh,  1e-4 * r_max );
     return;
 }
 
@@ -89,8 +91,7 @@ void photon::init_loc(  )
     const double r   = pow( r_arg, -4 );
     const double phi = uni_rand( generator ) * 6.28319;
     x = { r * cos( phi ), r * sin( phi ), 0. };
-    
-    x = { 0., 0., 0. };
+
     continue_walking = true;
     return;
 }
@@ -158,14 +159,14 @@ void photon::step_walk( const double & tau )
     while( tau_gone < tau )
     {
 	const double r = radius_c(  );
-	if( r > r_max )
+	if( r > r_max || r < r_eh )
 	{
 	    continue_walking = false;
 	    break;
 	}
 	else if( r < r_min )
 	{
-	    dx = r_min / 100.;
+	    dx = r_min / 10.;
 	    for( int i = 0; i < 3; ++ i )
 		x[ i ] += dx * p[ i + 1 ] / eta;
 	    continue;
