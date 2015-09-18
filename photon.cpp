@@ -229,8 +229,12 @@ void photon::iterate_photon(  )
 	    if( ! continue_walking )
 	    	break;
 
-	    elec.scatter_ph_simple
-		( this->p, prof->theta( x ) );
+	    if( is_simple_scat_model )
+		elec.scatter_ph_simple
+		    ( this->p, prof->theta( x ) );
+	    else
+		elec.scatter_ph
+		    ( this->p, prof->theta( x ) );
 	}
 	++ res_scat[ j ];
 	locate_bin( p[ 0 ] );
