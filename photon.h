@@ -50,9 +50,11 @@ private:			// Data
     static int    scat_max;
     static uint   n_repeat;
     static double d_tau_fiducial;
+    static bool   is_simple_scat_model;
     bool continue_walking;
 private:			// Functions & functors
     electron elec;
+
     void step_walk( const double & d_tau );
     void locate_bin( const double & eta );
 public:				// Function
@@ -68,9 +70,10 @@ private:			// Data
     static std::map<double, uint> bin_map;
     static std::vector<double> eta_upper;
     // Upper bound of eta
-    std::vector<uint> res;
+    std::vector<uint> res_e, res_scat;
 public:				// Data access
-           const std::vector<uint  > & get_res(  );
+           const std::vector<uint  > & get_res_e    (  );
+           const std::vector<uint  > & get_res_scat (  );
     static const std::vector<double> & get_eta_upper(  );
 };
 

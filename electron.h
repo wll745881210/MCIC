@@ -32,6 +32,10 @@ public:			  // Function
 public:				// Function
     void scatter_ph( std::array< double, 4 > & p_ph,
 	             const double & theta );
+    void scatter_ph_simple\
+        ( std::array< double, 4 > & p_ph,
+	  const double & theta );
+    
 };
     
 #endif

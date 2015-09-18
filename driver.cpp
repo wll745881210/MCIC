@@ -19,9 +19,9 @@ void driver( input & args )
     int n_thread( 1 );
     args.find_key( "n_thread", n_thread, 1 );
     if( n_thread > 1 )
-	omp_set_num_threads( n_thread );
+    	omp_set_num_threads( n_thread );
     else
-	n_thread = omp_get_num_threads(  );
+    	n_thread = omp_get_num_threads(  );
     auto p_gamma  = rand_gamma ::get_instance(  );
     auto p_knscat = rand_knscat::get_instance(  );
     auto p_planck = rand_planck::get_instance(  );
@@ -42,22 +42,34 @@ void driver( input & args )
     std::cout << "Done.\n\n" << std::endl;
 
     std::cout << "Dumping data... " << std::flush;
+    
     std::string output_path;
     args.find_key( "output_path", output_path, "mc.dat" );
-    std::ofstream fout( output_path.c_str(  ) );
+    std::ofstream fout_e( output_path.c_str(  ) );
+    auto output_path_scat = output_path + "_nscat";
+    std::ofstream fout_s( output_path_scat.c_str(  ) );
 
+    int scat_max( 0 );
+    args.find_key( "scat_max", scat_max, 0 );
     auto & e_upper = photon::get_eta_upper(  );
-    std::vector<double> res( e_upper.size(  ) );
+    std::vector<double> res_s( scat_max + 1     );
+    std::vector<double> res_e( e_upper.size(  ) );
 	
     for( int i = 0; i < n_thread; ++ i )
     {
-	auto & res_i = photon_arr[ i ].get_res(  );
-	for( unsigned j = 0; j < res.size(  ); ++ j )
-	    res[ j ] += res_i[ j ];
+	auto & res_i_e = photon_arr[ i ].get_res_e   (  );
+	auto & res_i_s = photon_arr[ i ].get_res_scat(  );
+	for( unsigned j = 0; j < res_e.size(  ); ++ j )
+	    res_e[ j ] += res_i_e[ j ];
+	for( unsigned j = 0; j < res_s.size(  ); ++ j )
+	    res_s[ j ] += res_i_s[ j ];
     }
-    for( unsigned i = 0; i < res.size(  ); ++ i )
-	fout << e_upper[ i ] << '\t' << res[ i ] << '\n';
-
+    for( unsigned i = 0; i < res_e.size(  ); ++ i )
+	fout_e << e_upper[ i ] << '\t'
+	       << res_e[ i ] << '\n';
+    for( unsigned i = 0; i < res_s.size(  ); ++ i )
+	fout_s << i << '\t' << res_s[ i ] << '\n';
+    
     std::cout << "Done.\n" << std::endl;
     return;
 }

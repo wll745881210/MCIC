@@ -32,3 +32,4 @@ unsigned rand_seed::get_seed( const std::string kind )
     return ch;
 }
 
+

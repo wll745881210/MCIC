@@ -75,5 +75,6 @@ double profile::theta( const std::array< double, 3 > & x )
     const double r = radius( x );
     const double idx
 	= ( r > r_fid ? t_pow_outer : t_pow_inner );
+    
     return theta_fid * pow( r / r_fid, idx );
 }

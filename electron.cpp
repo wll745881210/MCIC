@@ -128,3 +128,37 @@ void electron::scatter_ph
         
     return;
 }
+
+void electron::scatter_ph_simple
+( std::array< double, 4 > & p_ph, const double & theta )
+{
+    auto     ptr_gamma = rand_gamma::get_instance(  );
+    const double gamma = ptr_gamma->get_rand_gamma( theta );
+    const double beta  = sqrt( 1. - 1. / pow( gamma, 2 ) );
+    const double mu_e  = uni_rand( generator ) * 2 - 1;
+    const double cmu_e = sqrt( 1. - mu_e * mu_e );
+    const double phi_e = uni_rand( generator ) * 6.283185;
+
+    const double cum = uni_rand( generator );
+    double x( 0. );
+    // Random variable for energy ratio
+    if( cum < 0.5 * ( 1. - beta ) )
+	x = (-1 + beta + pow(beta,2) - pow(beta,3) - 
+	    2*sqrt(2)*beta
+	    *sqrt(-(cum*(-1 + beta)*pow(1 + beta,2))))/
+	    ((-1 + beta)*pow(1 + beta,2));
+    else
+	x = (1 - beta*(-1 + beta + pow(beta,2) + 
+		2*sqrt(2)*sqrt((1 - cum)
+		    *pow(-1 + beta,2)*(1 + beta))))/
+	    (pow(-1 + beta,2)*(1 + beta));
+
+    p_ph[ 0 ] *= x;
+    p_ph[ 1 ]  = p_ph[ 0 ] * mu_e;
+    p_ph[ 2 ]  = p_ph[ 0 ] * cmu_e * cos( phi_e );
+    p_ph[ 3 ]  = p_ph[ 0 ] * cmu_e * sin( phi_e );
+    return;
+}
+
+    
+    

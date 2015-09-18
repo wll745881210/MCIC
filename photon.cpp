@@ -16,6 +16,8 @@ double photon::r_disk_max    ( 0. );
 double photon::r_disk_min    ( 0. );
 double photon::d_tau_fiducial( 0. );
 int    photon::scat_max      ( 20 );
+
+bool   photon::is_simple_scat_model( false );
 photon::uint photon::n_repeat( 20 );
 
 std::map<double, photon::uint> photon::bin_map;
@@ -45,6 +47,9 @@ void photon::init( input & args )
     args.find_key( "theta_bb", theta_bb, 2e-6 );
     args.find_key( "scat_max", scat_max, 20   );
     args.find_key( "n_photon", n_photon, 20   );
+
+    args.find_key( "is_simple_scat_model",
+	            is_simple_scat_model, false );
     
     int n_thread( 1 );
     args.find_key( "n_thread", n_thread, 1   );
@@ -190,8 +195,6 @@ void photon::step_walk( const double & tau )
 	if( tau - tau_gone < d_tau )
 	    d_tau = fabs( tau - tau_gone ) * ( 1 + tiny );
 	// ( 1 + tiny ): the loop won't stuck
-
-
     }
     return;
 }
@@ -201,7 +204,7 @@ void photon::locate_bin( const double & eta )
     auto p = bin_map.lower_bound( eta );
     if( p == bin_map.end(  ) )
 	return;
-    ++ res[ p->second ];
+    ++ res_e[ p->second ];
     return;
 }
 
@@ -212,29 +215,37 @@ void photon::iterate_photon(  )
 	      << "being simulated on thread "
 	      << omp_get_thread_num(  ) << std::endl;
 
-    res.resize( eta_upper.size(  ), 0 );
+    res_e.resize( eta_upper.size(  ), 0 );
+    res_scat.resize( scat_max + 1,    0 );
     
     for( uint i = 0; i < n_repeat; ++ i )
     {
 	reset(  );
-	for( int j = 0; j < scat_max; ++ j )
+	int j( 0 );
+	for( j = 0; j < scat_max; ++ j )
 	{
 	    const double tau = exp_rand( generator );
 	    step_walk( tau );
 	    if( ! continue_walking )
-		break;
-	
-	    elec.scatter_ph( this->p, prof->theta( x ) );
+	    	break;
+
+	    elec.scatter_ph_simple
+		( this->p, prof->theta( x ) );
 	}
+	++ res_scat[ j ];
 	locate_bin( p[ 0 ] );
     }
     
     return;
 }
 
-const std::vector<photon::uint> & photon::get_res(  )
+const std::vector<photon::uint> & photon::get_res_e(  )
 {
-    return res;
+    return res_e;
+}
+const std::vector<photon::uint> & photon::get_res_scat(  )
+{
+    return res_scat;
 }
 
 const std::vector<double> & photon::get_eta_upper(  )

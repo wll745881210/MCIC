@@ -1,4 +1,5 @@
-CC = g++-4.8.4
+CC = c++-5
+# CC = clang++
 Option = -O3 -Wall -std=c++11 -fopenmp
 
 Objs = main.o rand_base.o rand_gamma.o rand_knscat.o \
